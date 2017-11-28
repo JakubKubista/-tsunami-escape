@@ -20,7 +20,7 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 
 	// parameters
 	this.angularSpeed	= Math.PI*2*0.5
-	this.linearSpeed	= 2.5
+	this.linearSpeed	= 5.5		// default 2.5, superspeed 200
 
 	onRenderFcts.push(function(delta, now){
 		if( inputs.right )	object3d.rotation.y	-= this.angularSpeed*delta
