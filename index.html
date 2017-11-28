@@ -48,6 +48,63 @@ require([
 	var mainCharacter =  new THREEx.MD2CharacterRatmahatta()
 	scene.add(mainCharacter.character.object3d)
 
+
+	onRenderFcts.push(function(delta){
+		mainCharacter.update(delta)
+	})
+	window.mainCharacter	= mainCharacter
+
+	mainCharacter.character.addEventListener('loaded', function(){
+		mainCharacter.setSkinName('ctf_r')
+		mainCharacter.setWeaponName('w_blaster')
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		controls.input based on keyboard				//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	document.body.addEventListener('keydown', function(event){
+		var inputs	= mainCharacter.controls.inputs
+		if( event.keyCode === 'W'.charCodeAt(0) )	inputs.up	= true
+		if( event.keyCode === 'S'.charCodeAt(0) )	inputs.down	= true
+		if( event.keyCode === 'A'.charCodeAt(0) )	inputs.left	= true
+		if( event.keyCode === 'D'.charCodeAt(0) )	inputs.right	= true
+		// to support arrows
+		if( event.keyCode === 38 )	inputs.up	= true
+		if( event.keyCode === 40 )	inputs.down	= true
+		if( event.keyCode === 37 )	inputs.left	= true
+		if( event.keyCode === 39 )	inputs.right	= true
+		// aditional imputs
+		if( event.keyCode === 32 )	mainCharacter.setAnimationName('jump')
+		if( event.keyCode === 77 )	mainCharacter.setAnimationName('flip')
+		if( event.keyCode === 78 )  mainCharacter.setAnimationName('crdeath')
+	})
+	document.body.addEventListener('keyup', function(event){
+		var inputs	= mainCharacter.controls.inputs
+		if( event.keyCode === 'W'.charCodeAt(0) )	inputs.up	= false
+		if( event.keyCode === 'S'.charCodeAt(0) )	inputs.down	= false
+		if( event.keyCode === 'A'.charCodeAt(0) )	inputs.left	= false
+		if( event.keyCode === 'D'.charCodeAt(0) )	inputs.right	= false
+		// to support arrows
+		if( event.keyCode === 38 )	inputs.up	= false
+		if( event.keyCode === 40 )	inputs.down	= false
+		if( event.keyCode === 37 )	inputs.left	= false
+		if( event.keyCode === 39 )	inputs.right	= false
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		animation based on velocity					//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	onRenderFcts.push(function(delta, now){
+		var inputs	= mainCharacter.controls.inputs
+		if( inputs.up || inputs.down ){
+			mainCharacter.setAnimationName('run')
+		}else {
+			mainCharacter.setAnimationName('stand')
+		}
+	})
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
 	//////////////////////////////////////////////////////////////////////////////////
