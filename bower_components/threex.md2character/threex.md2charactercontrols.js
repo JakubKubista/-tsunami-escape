@@ -15,6 +15,7 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 		left	: false,
 		up	: false,
 		down	: false,
+		jump	: false,
 	}
 	inputs		= this.inputs
 
@@ -25,6 +26,25 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 	onRenderFcts.push(function(delta, now){
 		if( inputs.right )	object3d.rotation.y	-= this.angularSpeed*delta
 		if( inputs.left )	object3d.rotation.y	+= this.angularSpeed*delta
+
+		// jump
+		var distance	= 0;
+		if( inputs.jump ){
+			if(object3d.position.y < .5){
+			distance	= +this.linearSpeed/2 * delta;
+			var velocity	= new THREE.Vector3(0, distance, 0);
+			object3d.position.add(velocity);
+		}else{
+			inputs.jump = false
+		}
+		}else{
+			if(object3d.position.y != 0){
+				console.log(object3d.position.y);
+				object3d.position.y -= this.linearSpeed/2 * delta
+				if(object3d.position.y<0.00001)
+					object3d.position.y = 0;
+			}
+		}
 
 		// up/down
 		var distance	= 0;

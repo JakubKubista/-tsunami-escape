@@ -76,7 +76,7 @@ require([
 		if( event.keyCode === 37 )	inputs.left	= true
 		if( event.keyCode === 39 )	inputs.right	= true
 		// aditional imputs
-		if( event.keyCode === 32 )	mainCharacter.setAnimationName('jump')
+		if( event.keyCode === 32 )	inputs.jump	= true
 		if( event.keyCode === 77 )	mainCharacter.setAnimationName('flip')
 		if( event.keyCode === 78 )  mainCharacter.setAnimationName('crdeath')
 		// crazy mode
@@ -102,6 +102,8 @@ require([
 		if( event.keyCode === 37 )	inputs.left	= false
 		if( event.keyCode === 39 )	inputs.right	= false
 
+		if( event.keyCode === 32 )	inputs.jump	= false
+
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -115,6 +117,7 @@ require([
 		}else {
 			mainCharacter.setAnimationName('stand')
 		}
+		if( inputs.jump )	mainCharacter.setAnimationName('jump')
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
