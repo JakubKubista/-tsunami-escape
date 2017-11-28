@@ -13,7 +13,7 @@ The game based on basics of WebGL and 3D models on three.js.
 
 • In his way there are obstacles to avoid, otherwise he approaches the wave.
 
-• *Via. similar game: [odkaz](https://vimeo.com/62941354).*
+• *Via. similar game: [link](https://vimeo.com/62941354).*
 
 ---
 
