@@ -47,8 +47,10 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var mainCharacter =  new THREEx.MD2CharacterRatmahatta()
+	var objMainCharacter = mainCharacter.character.object3d;
 	scene.add(mainCharacter.character.object3d)
 	mainCharacter.character.animationFPS = 10
+	mainCharacter.character.object3d.position.x = -1
 
 	onRenderFcts.push(function(delta){
 		mainCharacter.update(delta)
@@ -125,6 +127,9 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	var mesh = THREEx.Crates.createCrate0()
 	scene.add(mesh)
+	mesh.position.x	= 0.00
+	mesh.position.y	= 0.30
+	mesh.geometry = THREE.CubeGeometry( 0.5, 0.5, 0.5);
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
