@@ -136,7 +136,15 @@ require([
 		if (mainCharacter === null) return
 		// compute distance between character and the obstacle
 		var distance = mainCharacter.character.object3d.position.distanceTo(obstacle.position)
-		if (distance <= 0.2) {
+
+		if (distance <= 0.5) {
+			obstacle.material.opacity -= 0.1
+		}else{
+			if(obstacle.material.opacity <= 0.9){
+				obstacle.material.opacity+= 0.1
+			}
+		}
+		if (distance <= 0.25) {
 			destroyObstacle()
 			createObstacle()
 		}
@@ -162,7 +170,7 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
  		var distance = 3.00 * (Math.random()-0.5)
-		var velocity	= new THREE.Vector3(distance, -0.20, 2.00);
+		var velocity	= new THREE.Vector3(distance, -0.20, 5.00);
 		obstacle.position.add(velocity)
 	}
 
@@ -170,10 +178,11 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Destroy obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
+
 	function destroyObstacle(){
-		  distance = 0.00
-			scene.remove( obstacle );
-			obstacle.position.add(new THREE.Vector3(0, 0, 0))
+		distance = 0.00
+		scene.remove( obstacle )
+		obstacle.position.add(new THREE.Vector3(0, 0, 0))
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////
