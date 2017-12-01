@@ -7,7 +7,8 @@
 require([
 	'bower_components/threex.md2character/package.require.js',
 	'bower_components/threex.crates/package.require.js',
-	'bower_components/threex.keyboardstate/package.require.js'
+	'bower_components/threex.keyboardstate/package.require.js',
+	'bower_components/threex.skyBackground/package.require.js'
 ], function(){
 	// detect WebGL
 	if( !Detector.webgl ){
@@ -152,7 +153,7 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Auto move obstacle						//
 	//////////////////////////////////////////////////////////////////////////////////
-		var distance = 0.0
+	var distance = 0.0
 	onRenderFcts.push(function(delta, now){
 		// move the obstacle to back
 		distance += -1 * delta * 0.01
@@ -167,6 +168,12 @@ require([
 			createObstacle()
 		}
 	})
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Background pic						//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var skyBackground = THREEx.SkyBackground.blueSky()
+	scene.add(skyBackground)
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
