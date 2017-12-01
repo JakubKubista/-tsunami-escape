@@ -129,33 +129,43 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Create obstacle	model				//
 	//////////////////////////////////////////////////////////////////////////////////
-	var obstacle = THREEx.Crates.createCrate0()
-	scene.add(obstacle)
-	obstacle.position.x	= 0.00
-	obstacle.position.y	= 0.30
-	obstacle.geometry = new THREE.CubeGeometry( 0.5, 0.5, 0.5);
+	var obstacle = null
+	function createObstacle(){
+		obstacle = THREEx.Crates.createCrate0()
+		scene.add(obstacle)
+		obstacle.position.x	= 0.00
+		obstacle.position.y	= 0.30
+		obstacle.geometry = new THREE.CubeGeometry( 0.5, 0.5, 0.5);
+		resetObstacle()
+	}
+	createObstacle()
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Reset obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
-		obstacle.position.x	= 0.00
-		obstacle.position.x	+= 3.00 * (Math.random()-0.5)
-		obstacle.position.y	= 0.30
+ 		var distance = -1.00 // 3.00 * (Math.random()-0.5)
+		var velocity	= new THREE.Vector3(distance, -0.20, 2.00);
+		obstacle.position.add(velocity)
 	}
-	resetObstacle()
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Auto move obstacle						//
 	//////////////////////////////////////////////////////////////////////////////////
-	var distanceZ = 0.0
+		var distance = 0.0
 	onRenderFcts.push(function(delta, now){
 		// move the obstacle to back
-		distanceZ += -1 * delta
-		var velocity	= new THREE.Vector3(0, 0, distanceZ);
+		distance += -1 * delta * 0.01
+		var velocity	= new THREE.Vector3(0, 0, distance);
 		obstacle.position.add(velocity)
 		// make it warp
-		if (distanceZ < -3) resetObstacle()
+		console.log("distance: " + distance);
+		if (distance <= -0.0400) {
+			scene.remove( obstacle );
+			distance = 0.00
+			obstacle.position.add(velocity)
+			createObstacle()
+		}
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
