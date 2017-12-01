@@ -134,16 +134,10 @@ require([
 	onRenderFcts.push(function(delta, now){
 		// only if the character is loaded
 		if (mainCharacter === null) return
-
 		// compute distance between character and the obstacle
 		var distance = mainCharacter.character.object3d.position.distanceTo(obstacle.position)
-
-		console.log("distance: " + distance);
 		if (distance <= 0.2) {
-			var velocity	= new THREE.Vector3(0, 0, 0);
-			scene.remove( obstacle );
-			distance = 0.00
-			obstacle.position.add(velocity)
+			destroyObstacle()
 			createObstacle()
 		}
 	})
@@ -167,7 +161,7 @@ require([
 	//		Reset obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
- 		var distance = -1.00 // 3.00 * (Math.random()-0.5)
+ 		var distance = 3.00 * (Math.random()-0.5)
 		var velocity	= new THREE.Vector3(distance, -0.20, 2.00);
 		obstacle.position.add(velocity)
 	}
@@ -177,9 +171,9 @@ require([
 	//		Destroy obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
 	function destroyObstacle(){
- 		var distance = -1.00 // 3.00 * (Math.random()-0.5)
-		var velocity	= new THREE.Vector3(distance, -0.20, 2.00);
-		obstacle.position.add(velocity)
+		  distance = 0.00
+			scene.remove( obstacle );
+			obstacle.position.add(new THREE.Vector3(0, 0, 0))
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -192,10 +186,8 @@ require([
 		var velocity	= new THREE.Vector3(0, 0, distance);
 		obstacle.position.add(velocity)
 		// make it warp
-		if (distance <= -0.0400) {
-			scene.remove( obstacle );
-			distance = 0.00
-			obstacle.position.add(velocity)
+		if (distance <= -0.0700) {
+			destroyObstacle()
 			createObstacle()
 		}
 	})
