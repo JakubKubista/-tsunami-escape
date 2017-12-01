@@ -11,7 +11,7 @@ var THREEx	= THREEx	|| {};
  */
 THREEx.SkyBackground	= {};
 
-THREEx.SkyBackground.baseURL	= '../images/blue-sky-background.jpg'
+THREEx.SkyBackground.baseURL	= '../'
 
 //////////////////////////////////////////////////////////////////////////////////
 //										//
@@ -19,10 +19,9 @@ THREEx.SkyBackground.baseURL	= '../images/blue-sky-background.jpg'
 
 THREEx.SkyBackground.blueSky	= function(){
 	var baseURL	= THREEx.SkyBackground.baseURL
-	var geometry = new THREE.SphereGeometry(92,32,32);
-	var url = '../images/blue-sky-background.jpg'
+	var geometry = new THREE.SphereGeometry(32,32,32);
 	var material = new THREE.MeshBasicMaterial({
-		map: THREE.ImageUtils.loadTexture(url),
+		map: THREE.ImageUtils.loadTexture(baseURL + 'images/darkclouds-sky.jpeg'),
 		side : THREE.BackSide
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
