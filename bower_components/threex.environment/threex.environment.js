@@ -9,16 +9,16 @@ var THREEx	= THREEx	|| {};
  *
  * @constructor
  */
-THREEx.SkyBackground	= {};
+THREEx.Environment	= {};
 
-THREEx.SkyBackground.baseURL	= '../'
+THREEx.Environment.baseURL	= '../'
 
 //////////////////////////////////////////////////////////////////////////////////
 //										//
 //////////////////////////////////////////////////////////////////////////////////
 
-THREEx.SkyBackground.blueSky	= function(){
-	var baseURL	= THREEx.SkyBackground.baseURL
+THREEx.Environment.blueSky	= function(){
+	var baseURL	= THREEx.Environment.baseURL
 	var geometry = new THREE.SphereGeometry(32,32,32);
 	var material = new THREE.MeshBasicMaterial({
 		map: THREE.ImageUtils.loadTexture(baseURL + 'images/darkclouds-sky.jpeg'),
