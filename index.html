@@ -208,9 +208,27 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var skyBackground = THREEx.Environment.blueSky()
+	var road = THREEx.Environment.road()
 	scene.add(skyBackground)
+	scene.add(road)
 	skyBackground.position.add(new THREE.Vector3(0, 0, 0))
+
+	road.position.x = 0
+	road.position.y = -1
+	road.rotation.x = -180
+	//road.rotation.x = -1.8
 	onRenderFcts.push(function(delta, now){
+		console.log("road")
+		console.log(road.position)
+	  console.log("character")
+		console.log(mainCharacter.character.object3d.position)
+
+		road.position.z  = mainCharacter.character.object3d.position.z
+/*
+		road.position.x = mainCharacter.character.object3d.position.x
+		road.position.y = mainCharacter.character.object3d.position.y-25
+		road.position.z = mainCharacter.character.object3d.position.z
+*/
 		skyBackground.position.z = mainCharacter.character.object3d.position.z
 	})
 
