@@ -238,6 +238,7 @@ require([
 	//		Camera Controls							//
 	//////////////////////////////////////////////////////////////////////////////////
 	var mouse	= {x : 0, y : 0}
+	var cameraDistance = 0.0
 	document.addEventListener('mousemove', function(event){
 		mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
@@ -246,6 +247,13 @@ require([
 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
 		camera.lookAt( scene.position )
+
+		/* Basics for ZoomOut cam
+		cameraDistance += 1* delta * 0.01
+		var velocity	= new THREE.Vector3(0, 0, cameraDistance);
+		camera.position.add(velocity)
+		camera.lookAt( scene.position )
+		*/
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
