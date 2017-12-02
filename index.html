@@ -172,7 +172,8 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
  		var distance = 3.00 * (Math.random()-0.5)
-		var velocity	= new THREE.Vector3(distance, -0.20, 5.00);
+		var z = mainCharacter.character.object3d.position.z+5;
+		var velocity	= new THREE.Vector3(distance, -0.20, z);
 		obstacle.position.add(velocity)
 	}
 
@@ -193,7 +194,7 @@ require([
 	var distance = 0.0
 	onRenderFcts.push(function(delta, now){
 		// move the obstacle to back
-		distance += -1 * delta * 0.01
+		distance += -1 * delta * 0.008
 		var velocity	= new THREE.Vector3(0, 0, distance);
 		obstacle.position.add(velocity)
 		// make it warp
@@ -246,14 +247,11 @@ require([
 	onRenderFcts.push(function(delta, now){
 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
+
+		// Basics for ZoomOut cam
+		camera.position.z = mainCharacter.character.object3d.position.z+6
 		camera.lookAt( scene.position )
 
-		/* Basics for ZoomOut cam
-		cameraDistance += 1* delta * 0.01
-		var velocity	= new THREE.Vector3(0, 0, cameraDistance);
-		camera.position.add(velocity)
-		camera.lookAt( scene.position )
-		*/
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
