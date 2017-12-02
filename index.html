@@ -9,7 +9,7 @@ require([
 	'bower_components/threex.crates/package.require.js',
 	'bower_components/threex.keyboardstate/package.require.js',
 	'bower_components/threex.environment/package.require.js',
-	'bower_components/webaudiox/package.require.js'
+	'bower_components/webaudiox/build/webaudiox.js'
 ], function(){
 	// detect WebGL
 	if( !Detector.webgl ){
@@ -146,6 +146,7 @@ require([
 			}
 		}
 		if (distance <= 0.25) {
+			playSound()
 			destroyObstacle()
 			createObstacle()
 		}
@@ -219,9 +220,19 @@ require([
 	var soundBuffer;
 	// load the sound
 	var soundUrl = 'bower_components/webaudiox/examples/sounds/Wave1.wav'
-	WebAudiox.loadBuffer(context, soundUrl, function(buffer)){
+	WebAudiox.loadBuffer(context, soundUrl, function(buffer){
 		soundBuffer = buffer
 	})
+
+	// setup a play function
+	function playSound(){
+		if (!soundBuffer) return
+		var source = context.createBufferSource()
+		source.buffer = soundBuffer
+		source.connect(lineOut.destination)
+		source.start(0)
+		return source
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
