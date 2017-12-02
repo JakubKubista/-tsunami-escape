@@ -171,8 +171,8 @@ require([
 	//		Reset obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
- 		var distance = 3.00 * (Math.random()-0.5)
-		var z = mainCharacter.character.object3d.position.z+5;
+ 		var distance = 3.00 * (Math.random())
+		var z = mainCharacter.character.object3d.position.z+10;
 		var velocity	= new THREE.Vector3(distance, -0.20, z);
 		obstacle.position.add(velocity)
 	}
@@ -198,7 +198,7 @@ require([
 		var velocity	= new THREE.Vector3(0, 0, distance);
 		obstacle.position.add(velocity)
 		// make it warp
-		if (distance <= -0.0700) {
+		if (distance <= -0.0600) {
 			destroyObstacle()
 			createObstacle()
 		}
@@ -238,18 +238,24 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
 	//////////////////////////////////////////////////////////////////////////////////
-	var mouse	= {x : 0, y : 0}
+
 	var cameraDistance = 0.0
+
+	/* Mouse controll turn off
+	var mouse	= {x : 0, y : 0}
 	document.addEventListener('mousemove', function(event){
 		mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
 	}, false)
+	*/
+	camera.position.y = mainCharacter.character.object3d.position.y+1
 	onRenderFcts.push(function(delta, now){
+		/* Mouse controll turn off
 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
-
+		*/
 		// Basics for ZoomOut cam
-		camera.position.z = mainCharacter.character.object3d.position.z+6
+		camera.position.z = mainCharacter.character.object3d.position.z+9
 		camera.lookAt( scene.position )
 
 	})
