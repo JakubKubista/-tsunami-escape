@@ -8,7 +8,8 @@ require([
 	'bower_components/threex.md2character/package.require.js',
 	'bower_components/threex.crates/package.require.js',
 	'bower_components/threex.keyboardstate/package.require.js',
-	'bower_components/threex.environment/package.require.js'
+	'bower_components/threex.environment/package.require.js',
+	'bower_components/webaudiox/package.require.js'
 ], function(){
 	// detect WebGL
 	if( !Detector.webgl ){
@@ -206,6 +207,21 @@ require([
 
 	var skyBackground = THREEx.Environment.blueSky()
 	scene.add(skyBackground)
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init sound						//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var context = new AudioContext()
+	var lineOut = new WebAudiox.LineOut(context)
+	lineOut.volume = 0.2
+
+	var soundBuffer;
+	// load the sound
+	var soundUrl = 'bower_components/webaudiox/examples/sounds/Wave1.wav'
+	WebAudiox.loadBuffer(context, soundUrl, function(buffer)){
+		soundBuffer = buffer
+	})
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
