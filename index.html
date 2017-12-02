@@ -209,6 +209,11 @@ require([
 
 	var skyBackground = THREEx.Environment.blueSky()
 	scene.add(skyBackground)
+	skyBackground.position.add(new THREE.Vector3(0, 0, 0))
+	onRenderFcts.push(function(delta, now){
+		skyBackground.position.z = mainCharacter.character.object3d.position.z
+	})
+
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init sound						//
@@ -241,17 +246,21 @@ require([
 
 	var cameraDistance = 0.0
 
-	/* Mouse controll turn off
+	// Mouse controll turn off
 	var mouse	= {x : 0, y : 0}
 	document.addEventListener('mousemove', function(event){
-		mouse.x	= (event.clientX / window.innerWidth ) - 0.5
+		/*
+		Mouse controll turn off
+	  mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
+		*/
 	}, false)
-	*/
+
 	camera.position.y = mainCharacter.character.object3d.position.y+1
 	onRenderFcts.push(function(delta, now){
-		/* Mouse controll turn off
-		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
+		/*
+		 Mouse controll turn off
+ 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
 		*/
 		// Basics for ZoomOut cam
