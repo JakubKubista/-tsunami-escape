@@ -26,7 +26,7 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 	this.linearSpeed	= 5.5		// default 2.5, superspeed 200
 
 	onRenderFcts.push(function(delta, now){
-		// turn left/right/
+		// Turn left/right/
 		if( inputs.turnRight )	object3d.rotation.y	-= this.angularSpeed*delta
 		if( inputs.turnLeft )	object3d.rotation.y	+= this.angularSpeed*delta
 
@@ -52,11 +52,16 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 
 		// left/right/
 		var distanceX	= 0;
-		if( inputs.left )	distanceX	= -this.linearSpeed * delta
-		if( inputs.right )	distanceX	= +this.linearSpeed * delta
+		var limitX	= 2.17955;
+		if(object3d.position.x>=-limitX){
+			if( inputs.left )	distanceX	= -this.linearSpeed * delta
+		}
+		if(object3d.position.x<=limitX){
+			if( inputs.right )	distanceX	= +this.linearSpeed * delta
+		}
 		if( distanceX ){
-			var velocity	= new THREE.Vector3(distanceX, 0, 0);
-			object3d.position.add(velocity);
+				var velocity	= new THREE.Vector3(distanceX, 0, 0);
+				object3d.position.add(velocity);
 		}
 
 		// up/down/

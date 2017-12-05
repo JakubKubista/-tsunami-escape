@@ -172,7 +172,7 @@ require([
 	function resetObstacle(){
  		var distance = 3.00 * (Math.random())
 		var z = mainCharacter.character.object3d.position.z+10;
-		var velocity	= new THREE.Vector3(distance, -0.20, z);
+		var velocity	= new THREE.Vector3(distance, -0.50, z);
 		obstacle.position.add(velocity)
 	}
 
@@ -247,7 +247,6 @@ require([
 	//generating next buildings
 	var buildingScale = 15.2
 	onRenderFcts.push(function(delta, now){
-	console.log(mainCharacter.character.object3d.position.z)
 		if(buildingScale<mainCharacter.character.object3d.position.z){
 			generateBuilding(12.6,mainCharacter.character.object3d.position.z+20)
 			buildingScale+=15.2
