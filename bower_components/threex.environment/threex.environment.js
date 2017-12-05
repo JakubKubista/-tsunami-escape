@@ -33,7 +33,7 @@ THREEx.Environment.road	= function(){
 	var geometry = new THREE.PlaneGeometry(8,20,20);
 	var material = new THREE.MeshBasicMaterial({
 		map: THREE.ImageUtils.loadTexture(baseURL + 'images/road-min.jpg'),
-		side : THREE.BackSide
+		side : THREE.DoubleSide
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
 	return mesh

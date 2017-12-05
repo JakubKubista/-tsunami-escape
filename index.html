@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <script src='vendor/three.js/build/three.js'></script>
-<script src="vendor/require.js/require.js"></script>
-<script src="vendor/three.js/examples/js/Detector.js"></script>
-<script src="vendor/threex.windowresize.js"></script>
+<script src='vendor/require.js/require.js'></script>
+<script src='vendor/three.js/examples/js/Detector.js'></script>
+<script src='vendor/threex.windowresize.js'></script>
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'><script>
 require([
 	'bower_components/threex.md2character/package.require.js',
@@ -43,7 +43,6 @@ require([
 	var backLight	= new THREE.DirectionalLight('white', 0.75)
 	backLight.position.set(-0.5, -0.5, -2)
 	scene.add( backLight )
-
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Createm character model							//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -212,18 +211,12 @@ require([
 	scene.add(skyBackground)
 	skyBackground.position.add(new THREE.Vector3(0, 0, 0))
 	scene.add(road)
-
-	road.position.x = 0
-	road.position.y = -1
-	road.rotation.x = -180
-	//road.rotation.x = -1.8
+	var z = mainCharacter.character.object3d.position.z;
+	var velocity	= new THREE.Vector3(0, -.5, z);
+	road.position.add(velocity)
+	road.rotation.x = -1.6
 	onRenderFcts.push(function(delta, now){
-		//console.log("road")
-		//console.log(road.position)
-	  //console.log("character")
-		//console.log(mainCharacter.character.object3d.position)
 
-		road.position.z  = mainCharacter.character.object3d.position.z
 /*
 		road.position.x = mainCharacter.character.object3d.position.x
 		road.position.y = mainCharacter.character.object3d.position.y-25
