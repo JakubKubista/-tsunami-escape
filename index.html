@@ -210,8 +210,8 @@ require([
 	var skyBackground = THREEx.Environment.blueSky()
 	var road = THREEx.Environment.road()
 	scene.add(skyBackground)
-	scene.add(road)
 	skyBackground.position.add(new THREE.Vector3(0, 0, 0))
+	scene.add(road)
 
 	road.position.x = 0
 	road.position.y = -1

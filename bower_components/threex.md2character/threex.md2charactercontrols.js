@@ -26,39 +26,48 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 	this.linearSpeed	= 5.5		// default 2.5, superspeed 200
 
 	onRenderFcts.push(function(delta, now){
+		// Turn feft/right/
 		if( inputs.turnRight )	object3d.rotation.y	-= this.angularSpeed*delta
 		if( inputs.turnLeft )	object3d.rotation.y	+= this.angularSpeed*delta
 
 		// jump
-		var distance	= 0;
+		var distanceY	= 0;;
 		if( inputs.jump ){
-			if(object3d.position.y < .5){
-				distance	= +this.linearSpeed/2 * delta;
-				var velocity	= new THREE.Vector3(0, distance, 0);
-				object3d.position.add(velocity);
+			if(object3d.position.y < .7){
+				distanceY = +this.linearSpeed/2 * delta;
 			}else{
 				inputs.jump = false
 			}
 		}else{
 			if(object3d.position.y != 0){
-				console.log(object3d.position.y);
-				object3d.position.y -= this.linearSpeed/2 * delta
-				if(object3d.position.y<0.00001)
+					distanceY = -this.linearSpeed/2 * delta;
+				if(object3d.position.y<0.000001)
 					object3d.position.y = 0;
 			}
 		}
-
-		// up/down
-		var distance	= 0;
-		if( inputs.up )		distance	= +this.linearSpeed * delta;
-		if( inputs.left )	{
-			object3d.rotation.y = 90
-			distance	= -this.linearSpeed * delta
+		if( distanceY ){
+			var velocity	= new THREE.Vector3(0, distanceY, 0);
+			object3d.position.add(velocity);
 		}
-		if( inputs.right )		distance	= +this.linearSpeed * delta;
-		if( inputs.down )	distance	= -this.linearSpeed * delta;
-		if( distance ){
-			var velocity	= new THREE.Vector3(0, 0, distance);
+
+		// left/right/
+		var distanceX	= 0;
+		if( inputs.left )	distanceX	= -this.linearSpeed * delta
+		if( inputs.right )	distanceX	= +this.linearSpeed * delta
+		if( distanceX ){
+			var velocity	= new THREE.Vector3(distanceX, 0, 0);
+			object3d.position.add(velocity);
+		}
+
+		// up/down/
+		var distanceZ	= 0;
+		if( inputs.up )	distanceZ	= +this.linearSpeed * delta
+		if( inputs.down )	distanceZ	= -this.linearSpeed * delta
+		if( distanceZ ){
+			var velocity	= new THREE.Vector3(0, 0, distanceZ);
+			object3d.position.add(velocity);
+		}
+		if( velocity ){
 			var matrix	= new THREE.Matrix4().makeRotationY(object3d.rotation.y);
 			velocity.applyMatrix4( matrix );
 			object3d.position.add(velocity);
