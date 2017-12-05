@@ -202,28 +202,43 @@ require([
 			createObstacle()
 		}
 	})
+
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Background pic						//
+	//		Background skyBackground						//
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var skyBackground = THREEx.Environment.blueSky()
-	var road = THREEx.Environment.road()
 	scene.add(skyBackground)
 	skyBackground.position.add(new THREE.Vector3(0, 0, 0))
+	onRenderFcts.push(function(delta, now){
+		skyBackground.position.z = mainCharacter.character.object3d.position.z
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Floor - road					//
+	//////////////////////////////////////////////////////////////////////////////////
+	var road = THREEx.Environment.road()
 	scene.add(road)
 	var z = mainCharacter.character.object3d.position.z;
 	var velocity	= new THREE.Vector3(0, -.5, z);
 	road.position.add(velocity)
 	road.rotation.x = -1.57
-	onRenderFcts.push(function(delta, now){
 
-/*
-		road.position.x = mainCharacter.character.object3d.position.x
-		road.position.y = mainCharacter.character.object3d.position.y-25
-		road.position.z = mainCharacter.character.object3d.position.z
-*/
-		skyBackground.position.z = mainCharacter.character.object3d.position.z
-	})
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Sides - city building					//
+		//////////////////////////////////////////////////////////////////////////////////
+		var leftBuildings = THREEx.Environment.building()
+		scene.add(leftBuildings)
+		var z = mainCharacter.character.object3d.position.z-20;
+		var velocity	= new THREE.Vector3(-9, 4.4, z);
+		leftBuildings.position.add(velocity)
+
+		var rightBuildings = THREEx.Environment.building()
+		scene.add(rightBuildings)
+		var z = mainCharacter.character.object3d.position.z-20;
+		var velocity	= new THREE.Vector3(9, 4.4, z);
+		rightBuildings.position.add(velocity)
 
 
 	//////////////////////////////////////////////////////////////////////////////////

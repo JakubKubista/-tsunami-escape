@@ -42,3 +42,14 @@ THREEx.Environment.road	= function(){
 	var mesh	= new THREE.Mesh( geometry, material );
 	return mesh
 }
+
+THREEx.Environment.building	= function(){
+	var baseURL	= THREEx.Environment.baseURL
+	var geometry	= new THREE.CubeGeometry( 10, 10, 10);
+	var material	= new THREE.MeshPhongMaterial({
+		map	: THREE.ImageUtils.loadTexture(baseURL+'images/old-building-texture.jpg'),
+		normalScale	: new THREE.Vector2(0.3,0.3),
+	})
+	var mesh	= new THREE.Mesh( geometry, material );
+	return mesh
+}
