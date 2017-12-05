@@ -225,21 +225,34 @@ require([
 	road.rotation.x = -1.57
 
 
-		//////////////////////////////////////////////////////////////////////////////////
-		//		Sides - city building					//
-		//////////////////////////////////////////////////////////////////////////////////
-		var leftBuildings = THREEx.Environment.building()
-		scene.add(leftBuildings)
-		var z = mainCharacter.character.object3d.position.z-20;
-		var velocity	= new THREE.Vector3(-13, 6.4, z);
-		leftBuildings.position.add(velocity)
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Sides - city building					//
+	//////////////////////////////////////////////////////////////////////////////////
+	function generateBuilding(x,z){
+		var buildings = THREEx.Environment.building()
+		scene.add(buildings)
+		var velocity	= new THREE.Vector3(x, 6.2, z)
+		buildings.position.add(velocity)
+		buildings.rotation.x = -1.57
+		if(x > 0) {
+			x=0-x
+			generateBuilding(x,z)
+		}
+	}
+	//first six buildings
+	generateBuilding(12.6,mainCharacter.character.object3d.position.z-9.4)
+	generateBuilding(12.6,mainCharacter.character.object3d.position.z+5.8)
+	generateBuilding(12.6,mainCharacter.character.object3d.position.z+21.0)
 
-		var rightBuildings = THREEx.Environment.building()
-		scene.add(rightBuildings)
-		var z = mainCharacter.character.object3d.position.z-20;
-		var velocity	= new THREE.Vector3(13, 6.4, z);
-		rightBuildings.position.add(velocity)
-
+	//generating next buildings
+	var buildingScale = 15.2
+	onRenderFcts.push(function(delta, now){
+	console.log(mainCharacter.character.object3d.position.z)
+		if(buildingScale<mainCharacter.character.object3d.position.z){
+			generateBuilding(12.6,mainCharacter.character.object3d.position.z+20)
+			buildingScale+=15.2
+		}
+	})
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init sound						//
