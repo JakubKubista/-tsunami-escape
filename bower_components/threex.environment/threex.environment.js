@@ -33,8 +33,7 @@ THREEx.Environment.road	= function(){
 	var geometry = new THREE.PlaneGeometry(8,1000,20);
 
 	var Texture = THREE.ImageUtils.loadTexture(baseURL + 'images/road-long.jpg')
-    Texture.wrapS = Texture.wrapT = THREE.RepeatWrapping;
-    Texture.repeat.set( 1, 1 );
+    Texture.wrapS = Texture.wrapT = THREE.RepeatWrapping
 	var material = new THREE.MeshBasicMaterial({
 		map: Texture,
 		side : THREE.DoubleSide
@@ -43,11 +42,36 @@ THREEx.Environment.road	= function(){
 	return mesh
 }
 
+function generateBuildingURL(){
+	var buildingURL = ""
+	switch (Math.floor((Math.random() * 5) + 1)) {
+    case 1:
+        buildingURL = "images/buildings/old-building-texture.jpg"
+        break
+    case 2:
+        buildingURL = "images/buildings/old-building-texture2.jpg"
+        break
+    case 3:
+        buildingURL = "images/buildings/flat-building-texture.jpg"
+        break
+    case 4:
+        buildingURL = "images/buildings/flat-building-texture2.jpg"
+        break
+    case 5:
+        buildingURL = "images/buildings/new-building-texture.jpg"
+        break
+	}
+	return buildingURL
+}
+
 THREEx.Environment.building	= function(){
 	var baseURL	= THREEx.Environment.baseURL
-	var geometry	= new THREE.CubeGeometry( 10, 10, 10);
+	var buildingURL = generateBuildingURL()
+	var geometry	= new THREE.CubeGeometry( 15, 15, 15);
+	var Texture = THREE.ImageUtils.loadTexture(baseURL+buildingURL)
+		Texture.wrapS = Texture.wrapT = THREE.RepeatWrapping
 	var material	= new THREE.MeshPhongMaterial({
-		map	: THREE.ImageUtils.loadTexture(baseURL+'images/old-building-texture.jpg'),
+		map	: Texture,
 		normalScale	: new THREE.Vector2(0.3,0.3),
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
