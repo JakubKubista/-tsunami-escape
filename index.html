@@ -23,7 +23,7 @@ require([
 	// setup a scene and camera
 	var scene	= new THREE.Scene();
 	var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
-	camera.position.z = 4;
+	camera.position.z = 3;
 
 	// declare the rendering loop
 	var onRenderFcts= [];
@@ -130,7 +130,7 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Collision between character and obstacle				//
 	//////////////////////////////////////////////////////////////////////////////////
-
+  var minDistance = 0
 	onRenderFcts.push(function(delta, now){
 		// only if the character is loaded
 		if (mainCharacter === null) return
@@ -144,7 +144,8 @@ require([
 				obstacle.material.opacity+= 0.1
 			}
 		}
-		if (distance <= 0.6) {
+		if (distance <= minDistance) {
+			useObstacle()
 			playSound()
 			destroyObstacle()
 			createObstacle()
@@ -155,15 +156,56 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Create obstacle	model				//
 	//////////////////////////////////////////////////////////////////////////////////
+
+	var specialObstacle = ""
+	function generateObstacle(){
+		var generatedObstacle = null;
+		switch (Math.floor((Math.random() * 7) + 1)) {
+			case 1:
+				generatedObstacle = THREEx.Crates.createCrate0()
+				break
+			case 2:
+				generatedObstacle = THREEx.Crates.createCrate1()
+				break
+			case 3:
+				generatedObstacle = THREEx.Crates.createCrate2()
+				break
+			case 4:
+				generatedObstacle = THREEx.Crates.createCrateWood()
+				break
+			case 5:
+				generatedObstacle = THREEx.Crates.createCrateMetal()
+				break
+			case 6:
+				specialObstacle = "heart"
+				generatedObstacle = THREEx.Crates.heart()
+				break
+			case 7:
+				specialObstacle = "star"
+				generatedObstacle = THREEx.Crates.star()
+				break
+		}
+		return generatedObstacle;
+	}
+
 	var obstacle = null
 	function createObstacle(){
-		obstacle = THREEx.Crates.createCrate0()
+		obstacle = generateObstacle()
 		scene.add(obstacle)
 		obstacle.position.x	= 0.00
 		var obstacleScale = (Math.random() * (2.000 - 0.500) + 0.500).toFixed(4)
-		if(obstacleScale<=1.0)obstacle.position.y = 0.3
-		if(obstacleScale>1.0)obstacle.position.y = 0.6
-		if(obstacleScale>1.5)obstacle.position.y = 0.9
+		if(obstacleScale<=1.0){
+			obstacle.position.y = 0.3
+			minDistance = 0.6
+		}
+		if(obstacleScale>1.0){
+			obstacle.position.y = 0.6
+			minDistance = 0.8
+		}
+		if(obstacleScale>1.5){
+			obstacle.position.y = 0.9
+			minDistance = 1.2
+		}
 		obstacle.geometry = new THREE.CubeGeometry( obstacleScale, obstacleScale, obstacleScale);
 		resetObstacle()
 	}
@@ -196,11 +238,11 @@ require([
 	var distance = 0.0
 	onRenderFcts.push(function(delta, now){
 		// move the obstacle to back
-		distance += -1 * delta * 0.008
+		distance += -1 * delta * 0.0008
 		var velocity	= new THREE.Vector3(0, 0, distance);
 		obstacle.position.add(velocity)
 		// make it warp
-		if (distance <= -0.0600) {
+		if (distance <= -0.0030) {
 			destroyObstacle()
 			createObstacle()
 		}

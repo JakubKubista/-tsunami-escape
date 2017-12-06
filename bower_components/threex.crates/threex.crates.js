@@ -6,7 +6,7 @@ var THREEx	= THREEx	|| {};
 
 /**
  * THREEx extension
- * 
+ *
  * @constructor
  */
 THREEx.Crates	= {};
@@ -30,7 +30,7 @@ THREEx.Crates.createCrate0	= function(){
 		normalScale	: new THREE.Vector2(0.3,0.3),
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
-	return mesh	
+	return mesh
 }
 
 
@@ -51,7 +51,7 @@ THREEx.Crates.createCrate1	= function(){
 		normalScale	: new THREE.Vector2(0.3,0.3),
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
-	return mesh	
+	return mesh
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ THREEx.Crates.createCrate2	= function(){
 		normalScale	: new THREE.Vector2(0.3,0.3),
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
-	return mesh	
+	return mesh
 }
 
 
@@ -95,7 +95,7 @@ THREEx.Crates.createCrateWood	= function(){
 		specular	: new THREE.Color('#404040'),
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
-	return mesh	
+	return mesh
 }
 
 THREEx.Crates.createCrateMetal	= function(){
@@ -115,7 +115,27 @@ THREEx.Crates.createCrateMetal	= function(){
 
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
-	return mesh	
+	return mesh
 }
 
+THREEx.Crates.heart	= function(){
+	var baseURL	= THREEx.Crates.baseURL
+	var geometry	= new THREE.CubeGeometry( 1, 1, 1);
+	var material	= new THREE.MeshPhongMaterial({
+		map		: THREE.ImageUtils.loadTexture(baseURL+'images/heart.jpg'),
+		normalScale	: new THREE.Vector2(0.3,0.3),
+	})
+	var mesh	= new THREE.Mesh( geometry, material );
+	return mesh
+}
 
+THREEx.Crates.star	= function(){
+	var baseURL	= THREEx.Crates.baseURL
+	var geometry	= new THREE.CubeGeometry( 1, 1, 1);
+	var material	= new THREE.MeshPhongMaterial({
+		map		: THREE.ImageUtils.loadTexture(baseURL+'images/star.jpg'),
+		normalScale	: new THREE.Vector2(0.3,0.3),
+	})
+	var mesh	= new THREE.Mesh( geometry, material );
+	return mesh
+}
