@@ -59,12 +59,12 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 
 	mainCharacter.character.animationFPS = 10
-	mainCharacter.character.object3d.position.x = -1
+	mainCharacter.character.object3d.position.x = 0
 	mainCharacter.character.object3d.position.z = -1
 
 	mainCharacter.character.addEventListener('loaded', function(){
-		mainCharacter.setSkinName('ctf_r')
-		mainCharacter.setWeaponName('w_blaster')
+		mainCharacter.setSkinName('ratamahatta')
+		mainCharacter.setWeaponName('none')
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +127,30 @@ require([
 		if( inputs.jump )	mainCharacter.setAnimationName('jump')
 	})
 
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Use obstacle						//
+		//////////////////////////////////////////////////////////////////////////////////
+		function useObstacle(){
+			if(specialObstacle == "mistake"){
+				mainCharacter.setSkinName('ratamahatta')
+				mainCharacter.setWeaponName('none')
+				mainCharacter.controls.linearSpeed = 5.5
+				mainCharacter.character.animationFPS = 10
+			}
+			if(specialObstacle == "heart"){
+				mainCharacter.setSkinName('ctf_b')
+				mainCharacter.setWeaponName('w_hyperblaster')
+			}
+			if(specialObstacle == "star"){
+				mainCharacter.setSkinName('ctf_r')
+				mainCharacter.setWeaponName('none')
+				mainCharacter.controls.linearSpeed = 15
+				mainCharacter.character.animationFPS = 15
+			}
+			specialObstacle = ""
+		}
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Collision between character and obstacle				//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -145,8 +169,8 @@ require([
 			}
 		}
 		if (distance <= minDistance) {
-			useObstacle()
 			playSound()
+			useObstacle()
 			destroyObstacle()
 			createObstacle()
 		}
@@ -162,18 +186,23 @@ require([
 		var generatedObstacle = null;
 		switch (Math.floor((Math.random() * 7) + 1)) {
 			case 1:
+				specialObstacle = "mistake"
 				generatedObstacle = THREEx.Crates.createCrate0()
 				break
 			case 2:
+				specialObstacle = "mistake"
 				generatedObstacle = THREEx.Crates.createCrate1()
 				break
 			case 3:
+				specialObstacle = "mistake"
 				generatedObstacle = THREEx.Crates.createCrate2()
 				break
 			case 4:
+				specialObstacle = "mistake"
 				generatedObstacle = THREEx.Crates.createCrateWood()
 				break
 			case 5:
+				specialObstacle = "mistake"
 				generatedObstacle = THREEx.Crates.createCrateMetal()
 				break
 			case 6:
@@ -275,8 +304,8 @@ require([
   var roadScale = 0
 	onRenderFcts.push(function(delta, now){
 		if(roadScale<mainCharacter.character.object3d.position.z){
-			generateRoad(mainCharacter.character.object3d.position.z+39)
-			roadScale+=39
+			generateRoad(mainCharacter.character.object3d.position.z+38)
+			roadScale+=38
 		}
 	})
 
@@ -358,7 +387,7 @@ require([
 		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
 		*/
 		// Basics for ZoomOut cam
-		camera.position.z = mainCharacter.character.object3d.position.z+9
+		camera.position.z = mainCharacter.character.object3d.position.z+7
 		camera.lookAt( scene.position )
 
 	})
