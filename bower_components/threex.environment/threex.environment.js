@@ -30,9 +30,9 @@ THREEx.Environment.blueSky	= function(){
 
 THREEx.Environment.road	= function(){
 	var baseURL	= THREEx.Environment.baseURL
-	var geometry = new THREE.PlaneGeometry(8,1000,20);
+	var geometry = new THREE.PlaneGeometry(8,40,20);
 
-	var Texture = THREE.ImageUtils.loadTexture(baseURL + 'images/road-long.jpg')
+	var Texture = THREE.ImageUtils.loadTexture(baseURL + 'images/road.jpg')
     Texture.wrapS = Texture.wrapT = THREE.RepeatWrapping
 	var material = new THREE.MeshBasicMaterial({
 		map: Texture,

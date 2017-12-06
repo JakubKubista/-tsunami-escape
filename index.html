@@ -217,13 +217,23 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Floor - road					//
 	//////////////////////////////////////////////////////////////////////////////////
-	var road = THREEx.Environment.road()
-	scene.add(road)
-	var z = mainCharacter.character.object3d.position.z;
-	var velocity	= new THREE.Vector3(0, -.5, z);
-	road.position.add(velocity)
-	road.rotation.x = -1.57
+	function generateRoad(z){
+		var road = THREEx.Environment.road()
+		scene.add(road)
+		var velocity	= new THREE.Vector3(0, -.5, z);
+		road.position.add(velocity)
+		road.rotation.x = -1.57
+	}
 
+	//generating next road
+	generateRoad(mainCharacter.character.object3d.position.z+5)
+  var roadScale = 0
+	onRenderFcts.push(function(delta, now){
+		if(roadScale<mainCharacter.character.object3d.position.z){
+			generateRoad(mainCharacter.character.object3d.position.z+39)
+			roadScale+=39
+		}
+	})
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Sides - city building					//
@@ -240,15 +250,15 @@ require([
 		}
 	}
 	//first six buildings
-	generateBuilding(12.6,mainCharacter.character.object3d.position.z-9.4)
-	generateBuilding(12.6,mainCharacter.character.object3d.position.z+5.8)
-	generateBuilding(12.6,mainCharacter.character.object3d.position.z+21.0)
+	generateBuilding(12,mainCharacter.character.object3d.position.z-9.4)
+	generateBuilding(12,mainCharacter.character.object3d.position.z+5.8)
+	generateBuilding(12,mainCharacter.character.object3d.position.z+21.0)
 
 	//generating next buildings
 	var buildingScale = 15.2
 	onRenderFcts.push(function(delta, now){
 		if(buildingScale<mainCharacter.character.object3d.position.z){
-			generateBuilding(12.6,mainCharacter.character.object3d.position.z+20)
+			generateBuilding(12,mainCharacter.character.object3d.position.z+20)
 			buildingScale+=15.2
 		}
 	})
