@@ -77,3 +77,16 @@ THREEx.Environment.building	= function(){
 	var mesh	= new THREE.Mesh( geometry, material );
 	return mesh
 }
+
+THREEx.Environment.waterWave	= function(){
+	var baseURL	= THREEx.Environment.baseURL
+	var geometry = new THREE.PlaneGeometry(8,20,20);
+	var Texture = THREE.ImageUtils.loadTexture(baseURL+"images/water_wave.gif")
+		Texture.wrapS = Texture.wrapT = THREE.RepeatWrapping
+	var material	= new THREE.MeshPhongMaterial({
+		map	: Texture,
+		side : THREE.DoubleSide
+	})
+	var mesh	= new THREE.Mesh( geometry, material );
+	return mesh
+}
