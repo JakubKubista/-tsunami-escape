@@ -31,7 +31,7 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 		if( inputs.turnLeft )	object3d.rotation.y	+= this.angularSpeed*delta
 
 		// jump
-		var distanceY	= 0;;
+		var distanceY	= 0;
 		if( inputs.jump ){
 			if(object3d.position.y < .7){
 				distanceY = +this.linearSpeed/2 * delta;
