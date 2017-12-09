@@ -1,0 +1,30 @@
+body {
+	margin: 0px;
+	overflow: hidden;
+	font-family: Helvetica;
+	text-align: center;
+}
+.info {
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.6);
+	border-radius: 3px;
+	position: absolute;
+	bottom: 10px;
+	width: 12%;
+	margin: 25px;
+	padding: 25px;
+}
+#leftInfo {
+	left: 10px;
+}
+#rightInfo {
+	right: 10px;
+}
+#score {
+	font-size: 20px;
+}
+#health{
+	font-size:35px;
+	letter-spacing: 15px;
+	margin-left: 15px;
+}

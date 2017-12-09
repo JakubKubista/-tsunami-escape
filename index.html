@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="style.css">
 <script src='vendor/three.js/build/three.js'></script>
 <script src='vendor/require.js/require.js'></script>
 <script src='vendor/three.js/examples/js/Detector.js'></script>
@@ -6,7 +7,17 @@
 <script src='libs/main.character.js'></script>
 <script src='libs/giant.character.js'></script>
 <script src='libs/obstacle.js'></script>
-<body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'><script>
+
+<body>
+
+	<div class="info" id="leftInfo">
+	 	<span id="score">Score: 0</span>
+	</div>
+	<div class="info" id="rightInfo">
+	 	<span id="health">&#9829;&#9829;&#9829;</span>
+	</div>
+
+<script>
 require([
 	'bower_components/threex.md2character/package.require.js',
 	'bower_components/threex.crates/package.require.js',
@@ -33,6 +44,8 @@ require([
 	// handle window resize events
 	var winResize	= new THREEx.WindowResize(renderer, camera)
 
+	// declare the score
+	var score = 0
 	//////////////////////////////////////////////////////////////////////////////////
 	//		default 3 points lightning					//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +95,8 @@ require([
 		}else {
 			mainCharacter.setAnimationName('stand')
 		}
+		if( inputs.up ) score += Math.round(mainCharacter.character.object3d.position.z/10)
+		if( inputs.down ) score -= Math.round(mainCharacter.character.object3d.position.z/10)
 		if( inputs.jump )	mainCharacter.setAnimationName('jump')
 	})
 
@@ -315,7 +330,7 @@ require([
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
 	}, false)
 
-	var cameraLimitY = 0.19232557270104733
+	var cameraLimitY = 0.22232557270104733
 	camera.position.y = 3
 
 	onRenderFcts.push(function(delta, now){
@@ -335,6 +350,7 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	onRenderFcts.push(function(){
 		renderer.render( scene, camera );
+		document.getElementById('score').innerHTML = "Score: " + score
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -354,4 +370,5 @@ require([
 		})
 	})
 })
-</script></body>
+</script>
+</body>
