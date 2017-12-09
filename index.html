@@ -7,6 +7,7 @@
 <script src='libs/main.character.js'></script>
 <script src='libs/giant.character.js'></script>
 <script src='libs/obstacle.js'></script>
+<script src='libs/stats.js'></script>
 
 <body>
 
@@ -285,7 +286,9 @@ require([
 				if ((timer >= 20 && timer < 40)||(timer >= 60 && timer < 80)||
 						(timer >= 100 && timer < 120)||(timer >= 140 && timer < 160))
 					mainCharacter.setSkinName('ratamahatta')
-				console.log(timer)
+			}
+			if(timer==1){
+				healthDec()
 			}
 			if(timer>=160){
 				mainCharacter.setSkinName('ratamahatta')
