@@ -43,8 +43,33 @@ require([
 	var backLight	= new THREE.DirectionalLight('white', 0.75)
 	backLight.position.set(-0.5, -0.5, -2)
 	scene.add( backLight )
+
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Createm character model							//
+	//		Create giant character model							//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var giantCharacter =  new THREEx.MD2CharacterRatmahatta()
+	scene.add(giantCharacter.character.object3d)
+
+	onRenderFcts.push(function(delta){
+		giantCharacter.update(delta)
+	})
+
+
+	giantCharacter.character.animationFPS = 10
+	giantCharacter.character.scale = 1/5
+	giantCharacter.character.object3d.position.x = 0
+	giantCharacter.character.object3d.position.y = 4
+	giantCharacter.character.object3d.position.z = -30
+
+	giantCharacter.character.addEventListener('loaded', function(){
+		giantCharacter.setSkinName('dead')
+		giantCharacter.setWeaponName('none')
+		giantCharacter.setAnimationName('run')
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Create main character model							//
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var mainCharacter =  new THREEx.MD2CharacterRatmahatta()
@@ -83,7 +108,7 @@ require([
 		if( event.keyCode === 37 )	inputs.left	= true
 		if( event.keyCode === 39 )	inputs.right	= true
 		// aditional imputs
-		if( event.keyCode === 32 )	inputs.jump	= true
+		if( event.keyCode === 32 )	mainCharacter.setAnimationName('jump')
 		if( event.keyCode === 77 )	mainCharacter.setAnimationName('flip')
 		if( event.keyCode === 78 )  mainCharacter.setAnimationName('crdeath')
 		// crazy mode
@@ -340,15 +365,22 @@ require([
 
 
 		//////////////////////////////////////////////////////////////////////////////////
-		//		Background water wave						//
+		//		Giant character change						//
 		//////////////////////////////////////////////////////////////////////////////////
 
-		var waterWave = THREEx.Environment.waterWave()
-		scene.add(waterWave)
-		var velocity	= new THREE.Vector3(0, -.5, -5);
-		waterWave.position.add(velocity)
 		onRenderFcts.push(function(delta, now){
-			waterWave.position.z = mainCharacter.character.object3d.position.z-10
+			console.log(giantCharacter.character.object3d.position.z)
+			console.log(mainCharacter.character.object3d.position.z)
+
+			var distance	= 7.5 * delta
+			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+25){
+				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-30
+			}else{
+				var velocity	= new THREE.Vector3(0, 1, distance)
+				giantCharacter.character.object3d.position.add(velocity)
+			}
+			giantCharacter.character.object3d.position.y = 4
+			giantCharacter.setAnimationName('run')
 		})
 
 	//////////////////////////////////////////////////////////////////////////////////
