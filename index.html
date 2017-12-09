@@ -3,6 +3,9 @@
 <script src='vendor/require.js/require.js'></script>
 <script src='vendor/three.js/examples/js/Detector.js'></script>
 <script src='vendor/threex.windowresize.js'></script>
+<script src='libs/main.character.js'></script>
+<script src='libs/obstacle.js'></script>
+<script src='libs/environment.js'></script>
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'><script>
 require([
 	'bower_components/threex.md2character/package.require.js',
@@ -82,60 +85,13 @@ require([
 	//		Setup character model							//
 	//////////////////////////////////////////////////////////////////////////////////
 
-	mainCharacter.character.animationFPS = 10
-	mainCharacter.character.object3d.position.x = 0
-	mainCharacter.character.object3d.position.z = -1
-
-	mainCharacter.character.addEventListener('loaded', function(){
-		mainCharacter.setSkinName('ratamahatta')
-		mainCharacter.setWeaponName('none')
-	})
+	var defaultPosition = defaultValuesMainCharacter(mainCharacter)
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		controls.input based on keyboard				//
+	//		controls.input based on keyboard (libs/main.character.js)				//
 	//////////////////////////////////////////////////////////////////////////////////
 
-	document.body.addEventListener('keydown', function(event){
-		var inputs	= mainCharacter.controls.inputs
-		if( event.keyCode === 'W'.charCodeAt(0) )	inputs.up	= true
-		if( event.keyCode === 'S'.charCodeAt(0) )	inputs.down	= true
-		if( event.keyCode === 'A'.charCodeAt(0) )	inputs.turnLeft	= true
-		if( event.keyCode === 'D'.charCodeAt(0) )	inputs.turnRight	= true
-		// to support arrows
-		if( event.keyCode === 38 )	inputs.up	= true
-		if( event.keyCode === 40 )	inputs.down	= true
-		if( event.keyCode === 37 )	inputs.left	= true
-		if( event.keyCode === 39 )	inputs.right	= true
-		// aditional imputs
-		if( event.keyCode === 32 )	inputs.jump	= true
-		if( event.keyCode === 77 )	mainCharacter.setAnimationName('flip')
-		if( event.keyCode === 78 )  mainCharacter.setAnimationName('crdeath')
-		// crazy mode
-		if( event.keyCode === 16 )	{
-			if(mainCharacter.character.animationFPS == 100){
-				mainCharacter.character.animationFPS = 10
-				}
-			else{
-				mainCharacter.character.animationFPS = 100
-				}
-		}
-
-	})
-	document.body.addEventListener('keyup', function(event){
-		var inputs	= mainCharacter.controls.inputs
-		if( event.keyCode === 'W'.charCodeAt(0) )	inputs.up	= false
-		if( event.keyCode === 'S'.charCodeAt(0) )	inputs.down	= false
-		if( event.keyCode === 'A'.charCodeAt(0) )	inputs.turnLeft	= false
-		if( event.keyCode === 'D'.charCodeAt(0) )	inputs.turnRight	= false
-		// to support arrows
-		if( event.keyCode === 38 )	inputs.up	= false
-		if( event.keyCode === 40 )	inputs.down	= false
-		if( event.keyCode === 37 )	inputs.left	= false
-		if( event.keyCode === 39 )	inputs.right	= false
-
-		if( event.keyCode === 32 )	inputs.jump	= false
-
-	})
+	setMainCharacterControl(mainCharacter)
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		animation based on velocity					//
@@ -200,65 +156,15 @@ require([
 		}
 	})
 
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Create obstacle	model				//
-	//////////////////////////////////////////////////////////////////////////////////
-
-	var specialObstacle = ""
-	function generateObstacle(){
-		var generatedObstacle = null;
-		switch (Math.floor((Math.random() * 7) + 1)) {
-			case 1:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrate0()
-				break
-			case 2:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrate1()
-				break
-			case 3:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrate2()
-				break
-			case 4:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrateWood()
-				break
-			case 5:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrateMetal()
-				break
-			case 6:
-				specialObstacle = "heart"
-				generatedObstacle = THREEx.Crates.heart()
-				break
-			case 7:
-				specialObstacle = "star"
-				generatedObstacle = THREEx.Crates.star()
-				break
-		}
-		return generatedObstacle;
-	}
-
 	var obstacle = null
 	function createObstacle(){
-		obstacle = generateObstacle()
+		obstacle = generateObstacleType()
 		scene.add(obstacle)
 		obstacle.position.x	= 0.00
 		var obstacleScale = (Math.random() * (2.000 - 0.500) + 0.500).toFixed(4)
-		if(obstacleScale<=1.0){
-			obstacle.position.y = 0.3
-			minDistance = 0.6
-		}
-		if(obstacleScale>1.0){
-			obstacle.position.y = 0.6
-			minDistance = 0.8
-		}
-		if(obstacleScale>1.5){
-			obstacle.position.y = 0.9
-			minDistance = 1.2
-		}
+		var obstacleValues = setObstacleVerticalDistance(obstacleScale)
+		obstacle.position.y = obstacleValues[0]
+		minDistance = obstacleValues[1]
 		obstacle.geometry = new THREE.CubeGeometry( obstacleScale, obstacleScale, obstacleScale);
 		resetObstacle()
 	}
@@ -268,17 +174,15 @@ require([
 	//		Reset obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
- 		var distance = 3.00 * (Math.random())
+		var distance = generateObstacleDistance()
 		var z = mainCharacter.character.object3d.position.z+10;
 		var velocity	= new THREE.Vector3(distance, -0.50, z);
 		obstacle.position.add(velocity)
 	}
 
-
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Destroy obstacle	funciton				//
+	//		Destroy obstacle				//
 	//////////////////////////////////////////////////////////////////////////////////
-
 	function destroyObstacle(){
 		distance = 0.00
 		scene.remove( obstacle )
@@ -302,7 +206,7 @@ require([
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Background city						//
+	//		Init city (background)						//
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var city = THREEx.Environment.city()
@@ -313,7 +217,7 @@ require([
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Floor - road					//
+	//		Init road (floor)					//
 	//////////////////////////////////////////////////////////////////////////////////
 	function generateRoad(z){
 		var road = THREEx.Environment.road()
@@ -335,7 +239,7 @@ require([
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Sides - city building					//
+	//		Init buildings (sider)					//
 	//////////////////////////////////////////////////////////////////////////////////
 	function generateBuilding(x,z){
 		var buildings = THREEx.Environment.building()
@@ -350,12 +254,15 @@ require([
 	}
 
 	//first few buildings
-	for(var i=-55; i<=21; i+=15.2){
-		var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
-		generateBuilding(randX,mainCharacter.character.object3d.position.z+i)
+	function generateFewBuildings(defaultPosition){
+		for(var i=-55; i<=21; i+=15.2){
+			var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
+			generateBuilding(randX,defaultPosition+i)
+		}
 	}
 
 	//generating next buildings
+	generateFewBuildings(defaultPosition)
 	var buildingScale = 15.2
 	onRenderFcts.push(function(delta, now){
 		if(buildingScale<mainCharacter.character.object3d.position.z){
@@ -412,32 +319,25 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var cameraDistance = 0.0
-
-	// Mouse controll turn off
 	var mouse	= {x : 0, y : 0}
 	document.addEventListener('mousemove', function(event){
-
-		//Mouse controll turn off
 	  mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
-
 	}, false)
+
 	var cameraLimitY = -0.35232557270104733
 	camera.position.y = mainCharacter.character.object3d.position.y+1
-	onRenderFcts.push(function(delta, now){
 
-		 //Mouse controll turn off
+	onRenderFcts.push(function(delta, now){
  		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		if (camera.position.y>= cameraLimitY){
 			camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
 		}else{
 			camera.position.y += (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
 		}
-
 		// Basics for ZoomOut cam
 		camera.position.z = mainCharacter.character.object3d.position.z+7
 		camera.lookAt( scene.position )
-
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
