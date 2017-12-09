@@ -325,6 +325,7 @@ require([
 	}
 
 	//generating next road
+	generateRoad(mainCharacter.character.object3d.position.z-35)
 	generateRoad(mainCharacter.character.object3d.position.z+5)
   var roadScale = 0
 	onRenderFcts.push(function(delta, now){
@@ -348,10 +349,12 @@ require([
 			generateBuilding(x,z)
 		}
 	}
-	//first six buildings
-	generateBuilding(12,mainCharacter.character.object3d.position.z-9.4)
-	generateBuilding(11,mainCharacter.character.object3d.position.z+5.8)
-	generateBuilding(12,mainCharacter.character.object3d.position.z+21.0)
+
+	//first few buildings
+	for(var i=-55; i<=21; i+=15.2){
+		var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
+		generateBuilding(randX,mainCharacter.character.object3d.position.z+i)
+	}
 
 	//generating next buildings
 	var buildingScale = 15.2
