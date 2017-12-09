@@ -392,7 +392,7 @@ require([
 
 	var soundBuffer;
 	// load the sound
-	var soundUrl = 'bower_components/webaudiox/examples/sounds/pick_goods.mp3'
+	var soundUrl = 'bower_components/webaudiox/sounds/pick_goods.mp3'
 	WebAudiox.loadBuffer(context, soundUrl, function(buffer){
 		soundBuffer = buffer
 	})
@@ -416,20 +416,24 @@ require([
 	// Mouse controll turn off
 	var mouse	= {x : 0, y : 0}
 	document.addEventListener('mousemove', function(event){
-		/*
-		Mouse controll turn off
+
+		//Mouse controll turn off
 	  mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
-		*/
-	}, false)
 
+	}, false)
+	var cameraLimitY = -0.35232557270104733
 	camera.position.y = mainCharacter.character.object3d.position.y+1
 	onRenderFcts.push(function(delta, now){
-		/*
-		 Mouse controll turn off
+
+		 //Mouse controll turn off
  		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
-		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
-		*/
+		if (camera.position.y>= cameraLimitY){
+			camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
+		}else{
+			camera.position.y += (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
+		}
+
 		// Basics for ZoomOut cam
 		camera.position.z = mainCharacter.character.object3d.position.z+7
 		camera.lookAt( scene.position )
