@@ -56,7 +56,7 @@ require([
 	})
 
 
-	giantCharacter.character.animationFPS = 10
+	giantCharacter.character.animationFPS = 5
 	giantCharacter.character.scale = 1/5
 	giantCharacter.character.object3d.position.x = 0
 	giantCharacter.character.object3d.position.y = 4
@@ -108,7 +108,7 @@ require([
 		if( event.keyCode === 37 )	inputs.left	= true
 		if( event.keyCode === 39 )	inputs.right	= true
 		// aditional imputs
-		if( event.keyCode === 32 )	mainCharacter.setAnimationName('jump')
+		if( event.keyCode === 32 )	inputs.jump	= true
 		if( event.keyCode === 77 )	mainCharacter.setAnimationName('flip')
 		if( event.keyCode === 78 )  mainCharacter.setAnimationName('crdeath')
 		// crazy mode
@@ -303,14 +303,14 @@ require([
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Background skyBackground						//
+	//		Background city						//
 	//////////////////////////////////////////////////////////////////////////////////
 
-	var skyBackground = THREEx.Environment.blueSky()
-	scene.add(skyBackground)
-	skyBackground.position.add(new THREE.Vector3(0, 0, 0))
+	var city = THREEx.Environment.city()
+	scene.add(city)
+	city.position.add(new THREE.Vector3(-20, 25, 0))
 	onRenderFcts.push(function(delta, now){
-		skyBackground.position.z = mainCharacter.character.object3d.position.z
+		city.position.z = mainCharacter.character.object3d.position.z
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -369,12 +369,9 @@ require([
 		//////////////////////////////////////////////////////////////////////////////////
 
 		onRenderFcts.push(function(delta, now){
-			console.log(giantCharacter.character.object3d.position.z)
-			console.log(mainCharacter.character.object3d.position.z)
-
 			var distance	= 7.5 * delta
-			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+25){
-				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-30
+			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+35){
+				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 			}else{
 				var velocity	= new THREE.Vector3(0, 1, distance)
 				giantCharacter.character.object3d.position.add(velocity)

@@ -17,11 +17,11 @@ THREEx.Environment.baseURL	= '../'
 //										//
 //////////////////////////////////////////////////////////////////////////////////
 
-THREEx.Environment.blueSky	= function(){
+THREEx.Environment.city	= function(){
 	var baseURL	= THREEx.Environment.baseURL
-	var geometry = new THREE.SphereGeometry(32,32,32);
+	var geometry = new THREE.CubeGeometry(128,128,128);
 	var material = new THREE.MeshBasicMaterial({
-		map: THREE.ImageUtils.loadTexture(baseURL + 'images/darkclouds-sky.jpeg'),
+		map: THREE.ImageUtils.loadTexture(baseURL + 'images/city.jpg'),
 		side : THREE.BackSide
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
@@ -73,19 +73,6 @@ THREEx.Environment.building	= function(){
 	var material	= new THREE.MeshPhongMaterial({
 		map	: Texture,
 		normalScale	: new THREE.Vector2(0.3,0.3),
-	})
-	var mesh	= new THREE.Mesh( geometry, material );
-	return mesh
-}
-
-THREEx.Environment.waterWave	= function(){
-	var baseURL	= THREEx.Environment.baseURL
-	var geometry = new THREE.PlaneGeometry(8,20,20);
-	var Texture = THREE.ImageUtils.loadTexture(baseURL+"images/water_wave.gif")
-		Texture.wrapS = Texture.wrapT = THREE.RepeatWrapping
-	var material	= new THREE.MeshPhongMaterial({
-		map	: Texture,
-		side : THREE.DoubleSide
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
 	return mesh
