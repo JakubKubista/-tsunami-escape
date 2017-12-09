@@ -1,10 +1,8 @@
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Create obstacle	model				//
+	//		Generate obstacle	type				//
 	//////////////////////////////////////////////////////////////////////////////////
-
-	var specialObstacle = ""
-	function generateObstacleType(){
+	function generateObstacleType(specialObstacle){
 		var generatedObstacle = null;
 		switch (Math.floor((Math.random() * 7) + 1)) {
 			case 1:
@@ -36,27 +34,35 @@
 				generatedObstacle = THREEx.Crates.star()
 				break
 		}
-		return generatedObstacle;
+		return [generatedObstacle, specialObstacle];
 	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Set vertical distance Y and minimal distance for collision by scale 			//
+	//////////////////////////////////////////////////////////////////////////////////
 
 	function setObstacleVerticalDistance(obstacleScale){
 		var minDistance = 0
 		var obstaclePositionY = 0
 
 		if(obstacleScale<=1.0){
-			obstaclePositionY = 0.3
+			obstaclePositionY = 0.9
 			minDistance = 0.6
 		}
 		if(obstacleScale>1.0){
-			obstaclePositionY = 0.6
+			obstaclePositionY = 1.2
 			minDistance = 0.8
 		}
 		if(obstacleScale>1.5){
-			obstaclePositionY = 0.9
+			obstaclePositionY = 1.4
 			minDistance = 1.2
 		}
 		return [obstaclePositionY,minDistance];
 	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Set random horizontal distance X 			 			 			 			 			 			 			//
+	//////////////////////////////////////////////////////////////////////////////////
 
 function generateObstacleDistance(){
 	var rand = Math.random()
@@ -64,4 +70,27 @@ function generateObstacleDistance(){
 	if(Math.random()<0.5)  distance = 3.00 * Math.random()
 	if(Math.random()>=0.5)  distance = -3.00 * Math.random()
 	return distance
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//		Use obstacle																								   						//
+//////////////////////////////////////////////////////////////////////////////////
+function useObstacle(mainCharacter,specialObstacle){
+mainCharacter.character.object3d.position.y = 0
+mainCharacter.character.animationFPS = 10
+	if(specialObstacle == "mistake"){
+		mainCharacter.setSkinName('ratamahatta')
+		mainCharacter.setWeaponName('none')
+		mainCharacter.controls.linearSpeed = 5.5
+	}
+	if(specialObstacle == "heart"){
+		mainCharacter.setSkinName('ctf_b')
+		mainCharacter.setWeaponName('w_hyperblaster')
+	}
+	if(specialObstacle == "star"){
+		mainCharacter.setSkinName('ctf_r')
+		mainCharacter.setWeaponName('none')
+		mainCharacter.controls.linearSpeed = 15
+	}
+	specialObstacle = ""
 }

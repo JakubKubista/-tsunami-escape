@@ -4,8 +4,8 @@
 <script src='vendor/three.js/examples/js/Detector.js'></script>
 <script src='vendor/threex.windowresize.js'></script>
 <script src='libs/main.character.js'></script>
+<script src='libs/giant.character.js'></script>
 <script src='libs/obstacle.js'></script>
-<script src='libs/environment.js'></script>
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'><script>
 require([
 	'bower_components/threex.md2character/package.require.js',
@@ -52,45 +52,23 @@ require([
 
 	var giantCharacter =  new THREEx.MD2CharacterRatmahatta()
 	scene.add(giantCharacter.character.object3d)
-
 	onRenderFcts.push(function(delta){
 		giantCharacter.update(delta)
 	})
-
-
-	giantCharacter.character.animationFPS = 5
-	giantCharacter.character.scale = 1/5
-	giantCharacter.character.object3d.position.x = 0
-	giantCharacter.character.object3d.position.y = 4
-	giantCharacter.character.object3d.position.z = -30
-
-	giantCharacter.character.addEventListener('loaded', function(){
-		giantCharacter.setSkinName('dead')
-		giantCharacter.setWeaponName('none')
-		giantCharacter.setAnimationName('run')
-	})
+  defaultValuesGiantCharacter(giantCharacter)
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Create main character model							//
+	//		Create main character model, 						//
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var mainCharacter =  new THREEx.MD2CharacterRatmahatta()
 	scene.add(mainCharacter.character.object3d)
-
 	onRenderFcts.push(function(delta){
 		mainCharacter.update(delta)
 	})
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Setup character model							//
-	//////////////////////////////////////////////////////////////////////////////////
-
+ // Setup character model
 	var defaultPosition = defaultValuesMainCharacter(mainCharacter)
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		controls.input based on keyboard (libs/main.character.js)				//
-	//////////////////////////////////////////////////////////////////////////////////
-
+	// controls.input based on keyboard (libs/main.character.js)
 	setMainCharacterControl(mainCharacter)
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +77,7 @@ require([
 
 	onRenderFcts.push(function(delta, now){
 		var inputs	= mainCharacter.controls.inputs
-		if( inputs.up || inputs.down ){
+		if( inputs.up || inputs.down || inputs.left || inputs.right ){
 			mainCharacter.setAnimationName('run')
 		}else {
 			mainCharacter.setAnimationName('stand')
@@ -107,40 +85,16 @@ require([
 		if( inputs.jump )	mainCharacter.setAnimationName('jump')
 	})
 
-
-		//////////////////////////////////////////////////////////////////////////////////
-		//		Use obstacle						//
-		//////////////////////////////////////////////////////////////////////////////////
-		function useObstacle(){
-			if(specialObstacle == "mistake"){
-				mainCharacter.setSkinName('ratamahatta')
-				mainCharacter.setWeaponName('none')
-				mainCharacter.controls.linearSpeed = 5.5
-				mainCharacter.character.animationFPS = 10
-			}
-			if(specialObstacle == "heart"){
-				mainCharacter.setSkinName('ctf_b')
-				mainCharacter.setWeaponName('w_hyperblaster')
-			}
-			if(specialObstacle == "star"){
-				mainCharacter.setSkinName('ctf_r')
-				mainCharacter.setWeaponName('none')
-				mainCharacter.controls.linearSpeed = 15
-				mainCharacter.character.animationFPS = 15
-			}
-			specialObstacle = ""
-		}
-
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Collision between character and obstacle				//
 	//////////////////////////////////////////////////////////////////////////////////
   var minDistance = 0
+	var specialObstacle = ""
 	onRenderFcts.push(function(delta, now){
 		// only if the character is loaded
 		if (mainCharacter === null) return
 		// compute distance between character and the obstacle
 		var distance = mainCharacter.character.object3d.position.distanceTo(obstacle.position)
-
 		if (distance <= minDistance*2) {
 			obstacle.material.opacity -= 0.1
 		}else{
@@ -150,15 +104,21 @@ require([
 		}
 		if (distance <= minDistance) {
 			playSound()
-			useObstacle()
+			useObstacle(mainCharacter,specialObstacle)
 			destroyObstacle()
 			createObstacle()
 		}
 	})
 
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Create obstacle	model				//
+	//////////////////////////////////////////////////////////////////////////////////
+
 	var obstacle = null
 	function createObstacle(){
-		obstacle = generateObstacleType()
+		obstacleValues = generateObstacleType()
+		obstacle = obstacleValues[0]
+		specialObstacle = obstacleValues[1]
 		scene.add(obstacle)
 		obstacle.position.x	= 0.00
 		var obstacleScale = (Math.random() * (2.000 - 0.500) + 0.500).toFixed(4)
@@ -188,6 +148,8 @@ require([
 		scene.remove( obstacle )
 		obstacle.position.add(new THREE.Vector3(0, 0, 0))
 	}
+
+
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Auto move obstacle						//
@@ -222,7 +184,7 @@ require([
 	function generateRoad(z){
 		var road = THREEx.Environment.road()
 		scene.add(road)
-		var velocity	= new THREE.Vector3(0, -.5, z);
+		var velocity	= new THREE.Vector3(0, 0, z);
 		road.position.add(velocity)
 		road.rotation.x = -1.57
 	}
@@ -282,11 +244,35 @@ require([
 			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+35){
 				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 			}else{
-				var velocity	= new THREE.Vector3(0, 1, distance)
+				var velocity	= new THREE.Vector3(0, 0, distance)
 				giantCharacter.character.object3d.position.add(velocity)
 			}
-			giantCharacter.character.object3d.position.y = 4
+			giantCharacter.character.object3d.position.y = 4.5
 			giantCharacter.setAnimationName('run')
+		})
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Collision between main character and giant				//
+		//////////////////////////////////////////////////////////////////////////////////
+		onRenderFcts.push(function(delta, now){
+			// only if the character is loaded
+			if (mainCharacter === null) return
+			// compute distance between character and the obstacle
+			var distanceChars = mainCharacter.character.object3d.position.distanceTo(giantCharacter.character.object3d.position)
+
+			if (distanceChars <= 5) {
+				mainCharacter.setSkinName('dead')
+			}
+
+				/*
+			if (distance <= minDistance) {
+				playSound()
+				useObstacle(mainCharacter,specialObstacle)
+				destroyObstacle()
+				createObstacle()
+				specialObstacle = ""
+			}
+			*/
 		})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -325,15 +311,16 @@ require([
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
 	}, false)
 
-	var cameraLimitY = -0.35232557270104733
-	camera.position.y = mainCharacter.character.object3d.position.y+1
+	var cameraLimitY = 0.19232557270104733
+	camera.position.y = 3
 
 	onRenderFcts.push(function(delta, now){
+		console.log(camera.position.y)
  		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		if (camera.position.y>= cameraLimitY){
 			camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
 		}else{
-			camera.position.y += (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
+			camera.position.y -= (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
 		}
 		// Basics for ZoomOut cam
 		camera.position.z = mainCharacter.character.object3d.position.z+7
