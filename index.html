@@ -254,25 +254,29 @@ require([
 		//////////////////////////////////////////////////////////////////////////////////
 		//		Collision between main character and giant				//
 		//////////////////////////////////////////////////////////////////////////////////
+		var catched = false
+		var timer = 0
 		onRenderFcts.push(function(delta, now){
 			// only if the character is loaded
 			if (mainCharacter === null) return
 			// compute distance between character and the obstacle
 			var distanceChars = mainCharacter.character.object3d.position.distanceTo(giantCharacter.character.object3d.position)
-
 			if (distanceChars <= 5) {
+				catched = true
+			}
+			if(catched){
 				mainCharacter.setSkinName('dead')
+				timer++
+				if ((timer >= 20 && timer < 40)||(timer >= 60 && timer < 80)||
+						(timer >= 100 && timer < 120)||(timer >= 140 && timer < 160))
+					mainCharacter.setSkinName('ratamahatta')
+				console.log(timer)
 			}
-
-				/*
-			if (distance <= minDistance) {
-				playSound()
-				useObstacle(mainCharacter,specialObstacle)
-				destroyObstacle()
-				createObstacle()
-				specialObstacle = ""
+			if(timer>=160){
+				mainCharacter.setSkinName('ratamahatta')
+				catched = false
+				timer = 0
 			}
-			*/
 		})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -315,7 +319,6 @@ require([
 	camera.position.y = 3
 
 	onRenderFcts.push(function(delta, now){
-		console.log(camera.position.y)
  		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		if (camera.position.y>= cameraLimitY){
 			camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
