@@ -171,23 +171,23 @@ require([
 
 	var crwalking = false
 	onRenderFcts.push(function(delta, now){
-		var inputs	= mainCharacter.controls.inputs
-		if( inputs.up || inputs.down || inputs.left || inputs.right ){
-			if(crwalking==true){
-				mainCharacter.setAnimationName('crwalk')
-			}else{
-				mainCharacter.setAnimationName('run')
-			}
-		}else {
-			if(killed){
-				mainCharacter.setAnimationName('salute')
-			}else{
+		if(killed){
+			mainCharacter.setAnimationName('salute')
+		}else{
+			var inputs	= mainCharacter.controls.inputs
+			if( inputs.up || inputs.down || inputs.left || inputs.right ){
+				if(crwalking==true){
+					mainCharacter.setAnimationName('crwalk')
+				}else{
+					mainCharacter.setAnimationName('run')
+				}
+			}else {
 				mainCharacter.setAnimationName('stand')
 			}
+			if( inputs.up ) score += Math.round(mainCharacter.character.object3d.position.z/10)
+			if( inputs.down ) score -= Math.round(mainCharacter.character.object3d.position.z/10)
+			if( inputs.jump )	mainCharacter.setAnimationName('jump')
 		}
-		if( inputs.up ) score += Math.round(mainCharacter.character.object3d.position.z/10)
-		if( inputs.down ) score -= Math.round(mainCharacter.character.object3d.position.z/10)
-		if( inputs.jump )	mainCharacter.setAnimationName('jump')
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
