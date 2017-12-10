@@ -48,7 +48,7 @@ require([
 	// declare the score
 	var score = 0
 	// declare the health
-	var health = 0
+	var health = 3
 	//////////////////////////////////////////////////////////////////////////////////
 	//		default 3 points lightning					//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ require([
 			playSound()
 			oldTime = useObstacle(mainCharacter,specialObstacle)
 			if(specialObstacle=="mistake") crwalking=true
-			if(specialObstacle=="heart") health++
+			if(specialObstacle=="heart") health = incHealth()
 			destroyObstacle()
 			createObstacle()
 		}
@@ -272,9 +272,11 @@ require([
 		//		Giant character change						//
 		//////////////////////////////////////////////////////////////////////////////////
 		var catched = false
+		var giantSpeed = 8.5
 		onRenderFcts.push(function(delta, now){
-			var distance	= 8.5 * delta
-			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+35){
+			giantSpeed += 0.001
+			var distance	= giantSpeed * delta
+			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+36){
 				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 			}else{
 				var velocity	= new THREE.Vector3(0, 0, distance)
@@ -284,6 +286,7 @@ require([
 			if(catched || score<50){
 				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 				giantCharacter.setAnimationName('flip')
+				giantSpeed = 8.5
 			}else{
 				giantCharacter.setAnimationName('run')
 			}
@@ -309,7 +312,7 @@ require([
 					mainCharacter.setSkinName('ratamahatta')
 			}
 			if(timer==1){
-				var health = healthDec()
+				health = decHealth()
 			}
 			if(timer>=160){
 				mainCharacter.setSkinName('ratamahatta')
