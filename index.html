@@ -60,6 +60,89 @@ require([
 	backLight.position.set(-0.5, -0.5, -2)
 	scene.add( backLight )
 
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init city (background)						//
+		//////////////////////////////////////////////////////////////////////////////////
+
+		var city = THREEx.Environment.city()
+		scene.add(city)
+		city.position.add(new THREE.Vector3(-20, 25, 0))
+		onRenderFcts.push(function(delta, now){
+			city.position.z = mainCharacter.character.object3d.position.z
+		})
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Create main character model 						//
+		//////////////////////////////////////////////////////////////////////////////////
+
+		var mainCharacter =  new THREEx.MD2CharacterRatmahatta()
+		scene.add(mainCharacter.character.object3d)
+		onRenderFcts.push(function(delta){
+			mainCharacter.update(delta)
+		})
+		// Setup character model
+		var defaultPosition = defaultValuesMainCharacter(mainCharacter)
+		// controls.input based on keyboard (libs/main.character.js)
+		setMainCharacterControl(mainCharacter)
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init road (floor)					//
+		//////////////////////////////////////////////////////////////////////////////////
+		function generateRoad(z){
+			var road = THREEx.Environment.road()
+			scene.add(road)
+			var velocity	= new THREE.Vector3(0, 0, z);
+			road.position.add(velocity)
+			road.rotation.x = -1.57
+		}
+
+		//generating next road
+		generateRoad(mainCharacter.character.object3d.position.z-35)
+		generateRoad(mainCharacter.character.object3d.position.z+5)
+	  var roadScale = 0
+		onRenderFcts.push(function(delta, now){
+			if(roadScale<mainCharacter.character.object3d.position.z){
+				generateRoad(mainCharacter.character.object3d.position.z+38)
+				roadScale+=38
+			}
+		})
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init buildings (sider)					//
+		//////////////////////////////////////////////////////////////////////////////////
+		function generateBuilding(x,z){
+			var buildings = THREEx.Environment.building()
+			scene.add(buildings)
+			var velocity	= new THREE.Vector3(x, 6.2, z)
+			buildings.position.add(velocity)
+			//buildings.rotation.x = -1.57
+			if(x > 0) {
+				x=0-x
+				generateBuilding(x,z)
+			}
+		}
+
+		//first few buildings
+		function generateFewBuildings(defaultPosition){
+			for(var i=-55; i<=21; i+=15.2){
+				var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
+				generateBuilding(randX,defaultPosition+i)
+			}
+		}
+
+		//generating next buildings
+		generateFewBuildings(defaultPosition)
+		var buildingScale = 15.2
+		onRenderFcts.push(function(delta, now){
+			if(buildingScale<mainCharacter.character.object3d.position.z){
+				var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
+				generateBuilding(randX,mainCharacter.character.object3d.position.z+20)
+				buildingScale+=15.2
+			}
+		})
+
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Create giant character model							//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -70,20 +153,6 @@ require([
 		giantCharacter.update(delta)
 	})
   defaultValuesGiantCharacter(giantCharacter)
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Create main character model, 						//
-	//////////////////////////////////////////////////////////////////////////////////
-
-	var mainCharacter =  new THREEx.MD2CharacterRatmahatta()
-	scene.add(mainCharacter.character.object3d)
-	onRenderFcts.push(function(delta){
-		mainCharacter.update(delta)
-	})
- // Setup character model
-	var defaultPosition = defaultValuesMainCharacter(mainCharacter)
-	// controls.input based on keyboard (libs/main.character.js)
-	setMainCharacterControl(mainCharacter)
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		animation based on velocity					//
@@ -195,80 +264,13 @@ require([
 		}
 	})
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Init city (background)						//
-	//////////////////////////////////////////////////////////////////////////////////
-
-	var city = THREEx.Environment.city()
-	scene.add(city)
-	city.position.add(new THREE.Vector3(-20, 25, 0))
-	onRenderFcts.push(function(delta, now){
-		city.position.z = mainCharacter.character.object3d.position.z
-	})
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Init road (floor)					//
-	//////////////////////////////////////////////////////////////////////////////////
-	function generateRoad(z){
-		var road = THREEx.Environment.road()
-		scene.add(road)
-		var velocity	= new THREE.Vector3(0, 0, z);
-		road.position.add(velocity)
-		road.rotation.x = -1.57
-	}
-
-	//generating next road
-	generateRoad(mainCharacter.character.object3d.position.z-35)
-	generateRoad(mainCharacter.character.object3d.position.z+5)
-  var roadScale = 0
-	onRenderFcts.push(function(delta, now){
-		if(roadScale<mainCharacter.character.object3d.position.z){
-			generateRoad(mainCharacter.character.object3d.position.z+38)
-			roadScale+=38
-		}
-	})
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Init buildings (sider)					//
-	//////////////////////////////////////////////////////////////////////////////////
-	function generateBuilding(x,z){
-		var buildings = THREEx.Environment.building()
-		scene.add(buildings)
-		var velocity	= new THREE.Vector3(x, 6.2, z)
-		buildings.position.add(velocity)
-		//buildings.rotation.x = -1.57
-		if(x > 0) {
-			x=0-x
-			generateBuilding(x,z)
-		}
-	}
-
-	//first few buildings
-	function generateFewBuildings(defaultPosition){
-		for(var i=-55; i<=21; i+=15.2){
-			var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
-			generateBuilding(randX,defaultPosition+i)
-		}
-	}
-
-	//generating next buildings
-	generateFewBuildings(defaultPosition)
-	var buildingScale = 15.2
-	onRenderFcts.push(function(delta, now){
-		if(buildingScale<mainCharacter.character.object3d.position.z){
-			var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
-			generateBuilding(randX,mainCharacter.character.object3d.position.z+20)
-			buildingScale+=15.2
-		}
-	})
-
 
 		//////////////////////////////////////////////////////////////////////////////////
 		//		Giant character change						//
 		//////////////////////////////////////////////////////////////////////////////////
-
+		var catched = false
 		onRenderFcts.push(function(delta, now){
-			var distance	= 7.5 * delta
+			var distance	= 8.5 * delta
 			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+35){
 				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 			}else{
@@ -276,13 +278,17 @@ require([
 				giantCharacter.character.object3d.position.add(velocity)
 			}
 			giantCharacter.character.object3d.position.y = 4.5
-			giantCharacter.setAnimationName('run')
+			if(catched || score<100){
+				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
+				giantCharacter.setAnimationName('flip')
+			}else{
+				giantCharacter.setAnimationName('run')
+			}
 		})
 
 		//////////////////////////////////////////////////////////////////////////////////
 		//		Collision between main character and giant				//
 		//////////////////////////////////////////////////////////////////////////////////
-		var catched = false
 		var timer = 0
 		onRenderFcts.push(function(delta, now){
 			// only if the character is loaded
