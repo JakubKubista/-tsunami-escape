@@ -1,16 +1,8 @@
 <!DOCTYPE html>
 <link rel="stylesheet" type="text/css" href="style.css">
-<script src='vendor/three.js/build/three.js'></script>
-<script src='vendor/require.js/require.js'></script>
-<script src='vendor/three.js/examples/js/Detector.js'></script>
-<script src='vendor/threex.windowresize.js'></script>
-<script src='libs/main.character.js'></script>
-<script src='libs/giant.character.js'></script>
-<script src='libs/obstacle.js'></script>
-<script src='libs/stats.js'></script>
 
 <body>
-
+	<div id="loading"><img src="bower_components/threex.environment/images/loading.jpg" height="400px" width="800px"></div>
 	<div class="info" id="leftInfo">
 	 	<span id="score">Score: 0</span>
 	</div>
@@ -20,9 +12,17 @@
 	<div class="info" id="statistics">
 	 	<h1>GAME OVER</h1>
 		<span id="finalScore"></span><br /><br />
-		<span id="restart" onclick="restart()">Restart</span>
+		<span id="restart" onclick="gameRestart()">Restart</span>
 	</div>
 
+<script src='vendor/three.js/build/three.js'></script>
+<script src='vendor/require.js/require.js'></script>
+<script src='vendor/three.js/examples/js/Detector.js'></script>
+<script src='vendor/threex.windowresize.js'></script>
+<script src='libs/main.character.js'></script>
+<script src='libs/giant.character.js'></script>
+<script src='libs/obstacle.js'></script>
+<script src='libs/stats.js'></script>
 <script>
 require([
 	'bower_components/threex.md2character/package.require.js',

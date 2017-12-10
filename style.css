@@ -17,15 +17,31 @@ body {
 }
 #leftInfo {
 	left: 10px;
+  display: none;
 }
 #rightInfo {
 	right: 10px;
+  display: none;
 }
 #health{
 	font-size:35px;
 	letter-spacing: 15px;
 	margin-left: 15px;
 }
+#loading{
+  background-color: #1D1D1D;
+
+  position:absolute; /*it can be fixed too*/
+  left:0; right:0;
+  top:0; bottom:0;
+  margin:auto;
+  /*this to solve "the content will not be cut when the window is smaller than the content": */
+  max-width:100%;
+  max-height:100%;
+  overflow:auto;
+  padding-top: 15%;
+}
+
 #restart:hover{
 	color:#6D6D6D;
   -webkit-transition: color 1s;
@@ -42,5 +58,5 @@ body {
   top: 50%;
   margin-top: -100px;
   margin-left: -150px;
-  display: none
+  display: none;
 }

@@ -39,6 +39,12 @@ function getHealth(){
 		document.getElementById('finalScore').innerHTML = "Score: " + score
 	}
 
-	function restart(){
+	function gameLoaded(){
+		document.getElementById('loading').style.display = "none"
+		document.getElementById('leftInfo').style.display = "block"
+		document.getElementById('rightInfo').style.display = "block"
+	}
+
+	function gameRestart(){
 		location.reload();
 	}

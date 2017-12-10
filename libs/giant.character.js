@@ -12,5 +12,6 @@ function defaultValuesGiantCharacter(giantCharacter){
 		giantCharacter.setSkinName('dead')
 		giantCharacter.setWeaponName('none')
 		giantCharacter.setAnimationName('flip')
+		gameLoaded()
 	})
 }
