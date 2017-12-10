@@ -89,10 +89,15 @@ require([
 	//		animation based on velocity					//
 	//////////////////////////////////////////////////////////////////////////////////
 
+	var crwalking = false
 	onRenderFcts.push(function(delta, now){
 		var inputs	= mainCharacter.controls.inputs
 		if( inputs.up || inputs.down || inputs.left || inputs.right ){
-			mainCharacter.setAnimationName('run')
+			if(crwalking==true){
+				mainCharacter.setAnimationName('crwalk')
+			}else{
+				mainCharacter.setAnimationName('run')
+			}
 		}else {
 			mainCharacter.setAnimationName('stand')
 		}
@@ -105,6 +110,7 @@ require([
 	//		Collision between character and obstacle				//
 	//////////////////////////////////////////////////////////////////////////////////
   var minDistance = 0
+  var oldTime = 0
 	var specialObstacle = ""
 	onRenderFcts.push(function(delta, now){
 		// only if the character is loaded
@@ -120,9 +126,15 @@ require([
 		}
 		if (distance <= minDistance) {
 			playSound()
-			useObstacle(mainCharacter,specialObstacle)
+			oldTime = useObstacle(mainCharacter,specialObstacle)
+			if(specialObstacle=="mistake") crwalking=true
 			destroyObstacle()
 			createObstacle()
+		}
+		if (oldTime+4000 < getActualTime() && oldTime!=0){
+			oldTime = 0
+			crwalking=false
+			useObstacle(mainCharacter,"default")
 		}
 	})
 
@@ -343,6 +355,7 @@ require([
 		}else{
 			camera.position.y -= (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
 		}
+		if(camera.position.y < 0) camera.position.y = cameraLimitY
 		// Basics for ZoomOut cam
 		camera.position.z = mainCharacter.character.object3d.position.z+7
 		camera.lookAt( scene.position )

@@ -75,13 +75,23 @@ function generateObstacleDistance(){
 //////////////////////////////////////////////////////////////////////////////////
 //		Use obstacle																								   						//
 //////////////////////////////////////////////////////////////////////////////////
+function getActualTime(){
+	var d = new Date();
+  return d.getTime();
+}
+
 function useObstacle(mainCharacter,specialObstacle){
 mainCharacter.character.object3d.position.y = 0
 mainCharacter.character.animationFPS = 10
-	if(specialObstacle == "mistake"){
+	if(specialObstacle == "default"){
 		mainCharacter.setSkinName('ratamahatta')
 		mainCharacter.setWeaponName('none')
 		mainCharacter.controls.linearSpeed = 5.5
+	}
+	if(specialObstacle == "mistake"){
+		mainCharacter.setSkinName('ratamahatta')
+		mainCharacter.setWeaponName('none')
+		mainCharacter.controls.linearSpeed = 1.5
 	}
 	if(specialObstacle == "heart"){
 		mainCharacter.setSkinName('ctf_b')
@@ -92,5 +102,5 @@ mainCharacter.character.animationFPS = 10
 		mainCharacter.setWeaponName('none')
 		mainCharacter.controls.linearSpeed = 15
 	}
-	specialObstacle = ""
+  return getActualTime()
 }
