@@ -96,6 +96,7 @@ mainCharacter.character.animationFPS = 10
 	if(specialObstacle == "heart"){
 		mainCharacter.setSkinName('ctf_b')
 		mainCharacter.setWeaponName('w_hyperblaster')
+		healthInc()
 	}
 	if(specialObstacle == "star"){
 		mainCharacter.setSkinName('ctf_r')

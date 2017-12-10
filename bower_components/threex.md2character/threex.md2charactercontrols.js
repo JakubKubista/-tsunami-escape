@@ -67,7 +67,7 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 		// up/down/
 		var distanceZ	= 0;
 		if( inputs.up )	distanceZ	= +this.linearSpeed * delta
-		if( inputs.down )	distanceZ	= -this.linearSpeed * delta
+		if( inputs.down && object3d.position.z>=-1 )	distanceZ	= -this.linearSpeed * delta
 		if( distanceZ ){
 			var velocity	= new THREE.Vector3(0, 0, distanceZ);
 			object3d.position.add(velocity);

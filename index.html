@@ -47,6 +47,8 @@ require([
 
 	// declare the score
 	var score = 0
+	// declare the health
+	var health = 0
 	//////////////////////////////////////////////////////////////////////////////////
 	//		default 3 points lightning					//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -197,6 +199,7 @@ require([
 			playSound()
 			oldTime = useObstacle(mainCharacter,specialObstacle)
 			if(specialObstacle=="mistake") crwalking=true
+			if(specialObstacle=="heart") health++
 			destroyObstacle()
 			createObstacle()
 		}
@@ -278,7 +281,7 @@ require([
 				giantCharacter.character.object3d.position.add(velocity)
 			}
 			giantCharacter.character.object3d.position.y = 4.5
-			if(catched || score<100){
+			if(catched || score<50){
 				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 				giantCharacter.setAnimationName('flip')
 			}else{
@@ -306,7 +309,7 @@ require([
 					mainCharacter.setSkinName('ratamahatta')
 			}
 			if(timer==1){
-				healthDec()
+				var health = healthDec()
 			}
 			if(timer>=160){
 				mainCharacter.setSkinName('ratamahatta')
