@@ -27,7 +27,18 @@ function getHealth(){
 		var n = getHealth()
 		if(n<=3){
 			document.getElementById('health').innerHTML += "&#9829;"
-			document.getElementById('health').style.marginLeft ="0px" ;
+			document.getElementById('health').style.marginLeft ="0px"
 		}
 		return getHealth()
+	}
+
+	function gameOver(score){
+		document.getElementById('leftInfo').style.display = "none"
+		document.getElementById('rightInfo').style.display = "none"
+		document.getElementById('statistics').style.display = "block"
+		document.getElementById('finalScore').innerHTML = "Score: " + score
+	}
+
+	function restart(){
+		location.reload();
 	}

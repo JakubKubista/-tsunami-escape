@@ -13,6 +13,7 @@ body {
 	width: 12%;
 	margin: 25px;
 	padding: 25px;
+	font-size: 20px;
 }
 #leftInfo {
 	left: 10px;
@@ -20,11 +21,26 @@ body {
 #rightInfo {
 	right: 10px;
 }
-#score {
-	font-size: 20px;
-}
 #health{
 	font-size:35px;
 	letter-spacing: 15px;
 	margin-left: 15px;
+}
+#restart:hover{
+	color:#6D6D6D;
+  -webkit-transition: color 1s;
+  -moz-transition: color 1s;
+  -ms-transition: color 1s;
+  -o-transition: color 1s;
+  cursor: pointer;
+}
+#statistics{
+  position: absolute;
+  width: 300px;
+  height: 180px;
+  left: 50%;
+  top: 50%;
+  margin-top: -100px;
+  margin-left: -150px;
+  display: none
 }

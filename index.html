@@ -17,6 +17,11 @@
 	<div class="info" id="rightInfo">
 	 	<span id="health">&#9829;&#9829;&#9829;</span>
 	</div>
+	<div class="info" id="statistics">
+	 	<h1>GAME OVER</h1>
+		<span id="finalScore"></span><br /><br />
+		<span id="restart" onclick="restart()">Restart</span>
+	</div>
 
 <script>
 require([
@@ -49,6 +54,10 @@ require([
 	var score = 0
 	// declare the health
 	var health = 3
+
+	// game state
+	var catched = false
+	var killed = false
 	//////////////////////////////////////////////////////////////////////////////////
 	//		default 3 points lightning					//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +179,11 @@ require([
 				mainCharacter.setAnimationName('run')
 			}
 		}else {
-			mainCharacter.setAnimationName('stand')
+			if(killed){
+				mainCharacter.setAnimationName('salute')
+			}else{
+				mainCharacter.setAnimationName('stand')
+			}
 		}
 		if( inputs.up ) score += Math.round(mainCharacter.character.object3d.position.z/10)
 		if( inputs.down ) score -= Math.round(mainCharacter.character.object3d.position.z/10)
@@ -271,7 +284,6 @@ require([
 		//////////////////////////////////////////////////////////////////////////////////
 		//		Giant character change						//
 		//////////////////////////////////////////////////////////////////////////////////
-		var catched = false
 		var giantSpeed = 8.5
 		onRenderFcts.push(function(delta, now){
 			giantSpeed += 0.001
@@ -283,7 +295,7 @@ require([
 				giantCharacter.character.object3d.position.add(velocity)
 			}
 			giantCharacter.character.object3d.position.y = 4.5
-			if(catched || score<50){
+			if(catched || score<50 || killed){
 				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 				giantCharacter.setAnimationName('flip')
 				giantSpeed = 8.5
@@ -379,6 +391,10 @@ require([
 	onRenderFcts.push(function(){
 		renderer.render( scene, camera );
 		document.getElementById('score').innerHTML = "Score: " + score
+		if(health==0) {
+			gameOver(score)
+      killed = true
+		}
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
