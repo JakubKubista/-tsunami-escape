@@ -201,7 +201,20 @@ require([
 		// only if the character is loaded
 		if (mainCharacter === null) return
 		// compute distance between character and the obstacle
+
 		var distance = mainCharacter.character.object3d.position.distanceTo(obstacle.position)
+
+		if (obstacleNumber==4){
+			var distanceZ = obstacle.position.z + mainCharacter.character.object3d.position.z
+			//console.log("obstacle.position.z:" + obstacle.position.z)
+			if(
+					(mainCharacter.character.object3d.position.z>=obstacle.position.z-0.5)&&
+					(mainCharacter.character.object3d.position.z<=obstacle.position.z+0.5)&&
+					(mainCharacter.character.object3d.position.y<=0.01)
+				)
+				distance = minDistance
+		}
+		console.log(mainCharacter.character.object3d.position.y)
 		if (distance <= minDistance*2) {
 			obstacle.material.opacity -= 0.1
 		}else{
@@ -229,17 +242,25 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var obstacle = null
+	var obstacleNumber = 0
 	function createObstacle(){
 		obstacleValues = generateObstacleType()
 		obstacle = obstacleValues[0]
 		specialObstacle = obstacleValues[1]
+		obstacleNumber = obstacleValues[2]
 		scene.add(obstacle)
 		obstacle.position.x	= 0.00
 		var obstacleScale = (Math.random() * (1.500 - 0.500) + 0.500).toFixed(4)
 		var obstacleValues = setObstacleVerticalDistance(obstacleScale)
-		obstacle.position.y = obstacleValues[0]
-		minDistance = obstacleValues[1]
-		obstacle.geometry = new THREE.CubeGeometry( obstacleScale, obstacleScale, obstacleScale);
+		//obstacle.position.y = obstacleValues[0]
+		obstacle.position.y = 1
+		//minDistance = obstacleValues[1]
+		if(obstacleNumber==4){
+			minDistance = 0.5
+		}else{
+			minDistance = 0.8
+		}
+		//obstacle.geometry = new THREE.CubeGeometry( obstacleScale, obstacleScale, obstacleScale);
 		resetObstacle()
 	}
 	createObstacle()
@@ -248,9 +269,14 @@ require([
 	//		Reset obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
-		var distance = generateObstacleDistance()
+		var distanceX = generateObstacleDistance()
+		var distanceY = -0.50
+		if (obstacleNumber==4) {
+			distanceX = 0
+			distanceY = -0.75
+		}
 		var z = mainCharacter.character.object3d.position.z+14;
-		var velocity	= new THREE.Vector3(distance, -0.50, z);
+		var velocity	= new THREE.Vector3(distanceX, distanceY, z);
 		obstacle.position.add(velocity)
 	}
 

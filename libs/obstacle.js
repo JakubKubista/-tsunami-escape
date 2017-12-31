@@ -4,7 +4,9 @@
 	//////////////////////////////////////////////////////////////////////////////////
 	function generateObstacleType(specialObstacle){
 		var generatedObstacle = null;
-		switch (Math.floor((Math.random() * 7) + 1)) {
+		var obstacleNumber = Math.floor((Math.random() * 7) + 1);
+		//var obstacleNumber = 4;
+		switch (obstacleNumber) {
 			case 1:
 				specialObstacle = "mistake"
 				generatedObstacle = THREEx.Crates.createCrate0()
@@ -19,7 +21,7 @@
 				break
 			case 4:
 				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrateWood()
+				generatedObstacle = THREEx.Crates.long()
 				break
 			case 5:
 				specialObstacle = "mistake"
@@ -34,7 +36,7 @@
 				generatedObstacle = THREEx.Crates.star()
 				break
 		}
-		return [generatedObstacle, specialObstacle];
+		return [generatedObstacle, specialObstacle, obstacleNumber];
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////

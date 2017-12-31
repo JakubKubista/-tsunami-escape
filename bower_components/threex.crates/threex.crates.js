@@ -118,6 +118,17 @@ THREEx.Crates.createCrateMetal	= function(){
 	return mesh
 }
 
+THREEx.Crates.long	= function(){
+	var baseURL	= THREEx.Crates.baseURL
+	var geometry	= new THREE.CubeGeometry( 7, 0.75, 0.75);
+	var material	= new THREE.MeshPhongMaterial({
+		map		: THREE.ImageUtils.loadTexture(baseURL+'images/long.jpg'),
+		normalScale	: new THREE.Vector2(0.3,0.3),
+	})
+	var mesh	= new THREE.Mesh( geometry, material );
+	return mesh
+}
+
 THREEx.Crates.heart	= function(){
 	var baseURL	= THREEx.Crates.baseURL
 	var geometry	= new THREE.CubeGeometry( 1, 1, 1);
