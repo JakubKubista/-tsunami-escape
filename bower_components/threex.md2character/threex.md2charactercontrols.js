@@ -53,7 +53,7 @@ THREEx.MD2CharacterControls	= function(object3d, inputs){
 
 		// left/right/
 		var distanceX	= 0;
-		var limitX	= 2.17955;
+		var limitX	= 2.87955;
 		if(object3d.position.x>=-limitX){
 			if( inputs.left )	distanceX	= -this.linearSpeed * delta
 		}
