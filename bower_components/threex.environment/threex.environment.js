@@ -44,7 +44,7 @@ THREEx.Environment.road	= function(){
 
 function generateBuildingURL(){
 	var buildingURL = ""
-	switch (Math.floor((Math.random() * 5) + 1)) {
+	switch (Math.floor((Math.random() * 7) + 1)) {
     case 1:
         buildingURL = "images/buildings/old-building-texture.jpg"
         break
@@ -57,8 +57,14 @@ function generateBuildingURL(){
     case 4:
         buildingURL = "images/buildings/flat-building-texture2.jpg"
         break
-    case 5:
+		case 5:
         buildingURL = "images/buildings/new-building-texture.jpg"
+        break
+    case 6:
+        buildingURL = "images/buildings/modern-building-texture.jpg"
+        break
+    case 7:
+        buildingURL = "images/buildings/brick-building-texture.jpg"
         break
 	}
 	return buildingURL

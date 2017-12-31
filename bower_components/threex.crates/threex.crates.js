@@ -133,7 +133,7 @@ THREEx.Crates.star	= function(){
 	var baseURL	= THREEx.Crates.baseURL
 	var geometry	= new THREE.CubeGeometry( 1, 1, 1);
 	var material	= new THREE.MeshPhongMaterial({
-		map		: THREE.ImageUtils.loadTexture(baseURL+'images/star.jpg'),
+		map		: THREE.ImageUtils.loadTexture(baseURL+'images/flash.jpg'),
 		normalScale	: new THREE.Vector2(0.3,0.3),
 	})
 	var mesh	= new THREE.Mesh( geometry, material );
