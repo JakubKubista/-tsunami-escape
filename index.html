@@ -214,7 +214,6 @@ require([
 				)
 				distance = minDistance
 		}
-		console.log(mainCharacter.character.object3d.position.y)
 		if (distance <= minDistance*2) {
 			obstacle.material.opacity -= 0.1
 		}else{
@@ -276,6 +275,9 @@ require([
 			distanceY = -0.75
 		}
 		var z = mainCharacter.character.object3d.position.z+14;
+		if(obstacleNumber==3){
+			distanceX = -2;
+		}
 		var velocity	= new THREE.Vector3(distanceX, distanceY, z);
 		obstacle.position.add(velocity)
 	}
@@ -294,17 +296,66 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Auto move obstacle						//
 	//////////////////////////////////////////////////////////////////////////////////
+	var move = false
+	function laserMovement(delta){
+		var obstacleMovementPositionX
+		if(obstacle.position.x<=-3.2){
+			move = true
+		}
+		if(obstacle.position.x>=2.5){
+			move = false
+		}
+		if(move){
+			obstacleMovementPositionX = delta * 5.5;
+		}else{
+			obstacleMovementPositionX = delta * -5.5;
+		}
+		return obstacleMovementPositionX
+	}
+
 	var distance = 0.0
+	var farAway = false
+  var obTimer = 0
 	onRenderFcts.push(function(delta, now){
 		// move the obstacle to back
 		distance += -1 * delta * 0.0008
+		if(obstacleNumber==3){
+			var obstacleMovementPositionX = laserMovement(delta)
+			if (obstacleMovementPositionX){
+					var velocity	= new THREE.Vector3(obstacleMovementPositionX, 0, 0);
+					obstacle.position.add(velocity)
+			}
+		}
 		var velocity	= new THREE.Vector3(0, 0, distance);
 		obstacle.position.add(velocity)
 		// make it warp
-		if (distance <= -0.0030) {
-			destroyObstacle()
-			createObstacle()
+
+
+
+		if (mainCharacter.character.object3d.position.z>obstacle.position.z+5) {
+			farAway = true
+			if(farAway){
+				obstacle.material.visible = true
+
+				obTimer++
+				if ((obTimer >= 10 && obTimer < 20)||(obTimer >= 30 && obTimer < 40)||
+						(obTimer >= 50 && obTimer < 60)||(obTimer >= 70 && obTimer < 80))
+						obstacle.material.visible = false
+						console.log(obTimer)
+			}
+			if(obTimer>=80){
+				farAway = false
+				obTimer = 0
+			}
+
+
+			if (mainCharacter.character.object3d.position.z>obstacle.position.z+17) {
+				destroyObstacle()
+				createObstacle()
+			}
 		}
+
+
 	})
 
 
