@@ -5,6 +5,7 @@
 	function generateObstacleType(){
 		var generatedObstacle = null;
 		var obstacleNumber = Math.floor((Math.random() * 7) + 1);
+		//var obstacleNumber = 5
 		switch (obstacleNumber) {
 			case 1:
 				specialObstacle = "mistake"
@@ -65,11 +66,19 @@
 	//		Set random horizontal distance X 			 			 			 			 			 			 			//
 	//////////////////////////////////////////////////////////////////////////////////
 
-function generateObstacleDistance(){
-	var rand = Math.random()
+function generateObstacleDistance(obstacleNumber){
+  var rand = 0
 	var distance = 0
-	if(Math.random()<0.5)  distance = 3.00 * Math.random()
-	if(Math.random()>=0.5)  distance = -3.00 * Math.random()
+	if(obstacleNumber==5){
+		rand = Math.floor((Math.random() * 2) + 1);
+		distance = (rand == 1) ? distance = 1.8 : distance = -1.8
+	}else if(obstacleNumber==3){
+		distance = -2
+	}else{
+		rand = Math.random()
+		if(rand<0.5)  distance = 3.00 * Math.random()
+		if(rand>=0.5)  distance = -3.00 * Math.random()
+	}
 	return distance
 }
 

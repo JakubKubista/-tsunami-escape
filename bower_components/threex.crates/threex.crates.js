@@ -100,7 +100,7 @@ THREEx.Crates.createCrateWood	= function(){
 
 THREEx.Crates.createCrateMetal	= function(){
 	var baseURL	= THREEx.Crates.baseURL
-	var geometry	= new THREE.CubeGeometry( 1, 1, 1);
+	var geometry	= new THREE.CubeGeometry( 3, 3, 3);
 	var material	= new THREE.MeshPhongMaterial({
 		map		: THREE.ImageUtils.loadTexture(baseURL+'images/llamapixel/metal/crate_metal_diffuse.jpg'),
 

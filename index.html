@@ -204,9 +204,12 @@ require([
 
 		var distance = mainCharacter.character.object3d.position.distanceTo(obstacle.position)
 
+		if (obstacleNumber==5){
+			minDistance = 2.5
+		}
+
 		if (obstacleNumber==4){
 			var distanceZ = obstacle.position.z + mainCharacter.character.object3d.position.z
-			//console.log("obstacle.position.z:" + obstacle.position.z)
 			if(
 					(mainCharacter.character.object3d.position.z>=obstacle.position.z-0.5)&&
 					(mainCharacter.character.object3d.position.z<=obstacle.position.z+0.5)&&
@@ -252,7 +255,11 @@ require([
 		var obstacleScale = (Math.random() * (1.500 - 0.500) + 0.500).toFixed(4)
 		var obstacleValues = setObstacleVerticalDistance(obstacleScale)
 		//obstacle.position.y = obstacleValues[0]
-		obstacle.position.y = 1
+		if(obstacleNumber==5){
+			obstacle.position.y = 2
+		}else{
+			obstacle.position.y = 1
+		}
 		//minDistance = obstacleValues[1]
 		if(obstacleNumber==4){
 			minDistance = 0.5
@@ -268,16 +275,13 @@ require([
 	//		Reset obstacle	funciton				//
 	//////////////////////////////////////////////////////////////////////////////////
 	function resetObstacle(){
-		var distanceX = generateObstacleDistance()
+		var distanceX = generateObstacleDistance(obstacleNumber)
 		var distanceY = -0.50
 		if (obstacleNumber==4) {
 			distanceX = 0
 			distanceY = -0.75
 		}
 		var z = mainCharacter.character.object3d.position.z+14;
-		if(obstacleNumber==3){
-			distanceX = -2;
-		}
 		var velocity	= new THREE.Vector3(distanceX, distanceY, z);
 		obstacle.position.add(velocity)
 	}
@@ -290,7 +294,6 @@ require([
 		scene.remove( obstacle )
 		obstacle.position.add(new THREE.Vector3(0, 0, 0))
 	}
-
 
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -316,6 +319,7 @@ require([
 	var distance = 0.0
 	var farAway = false
   var obTimer = 0
+
 	onRenderFcts.push(function(delta, now){
 		// move the obstacle to back
 		distance += -1 * delta * 0.0008
@@ -328,10 +332,11 @@ require([
 		}
 		var velocity	= new THREE.Vector3(0, 0, distance);
 		obstacle.position.add(velocity)
+		if(obstacleNumber>=6){
+			obstacle.rotation.y	-= Math.PI*2*0.5*delta
+		}
+
 		// make it warp
-
-
-
 		if (mainCharacter.character.object3d.position.z>obstacle.position.z+5) {
 			farAway = true
 			if(farAway){
@@ -341,21 +346,16 @@ require([
 				if ((obTimer >= 10 && obTimer < 20)||(obTimer >= 30 && obTimer < 40)||
 						(obTimer >= 50 && obTimer < 60)||(obTimer >= 70 && obTimer < 80))
 						obstacle.material.visible = false
-						console.log(obTimer)
 			}
 			if(obTimer>=80){
 				farAway = false
 				obTimer = 0
 			}
-
-
 			if (mainCharacter.character.object3d.position.z>obstacle.position.z+17) {
 				destroyObstacle()
 				createObstacle()
 			}
 		}
-
-
 	})
 
 
@@ -390,8 +390,7 @@ require([
 			// only if the character is loaded
 			if (mainCharacter === null) return
 			// compute distance between character and the obstacle
-			var distanceChars = mainCharacter.character.object3d.position.distanceTo(giantCharacter.character.object3d.position)
-			if (distanceChars <= 5) {
+			if(mainCharacter.character.object3d.position.z<=giantCharacter.character.object3d.position.z+2){
 				catched = true
 			}
 			if(catched){
