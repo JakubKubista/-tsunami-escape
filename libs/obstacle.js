@@ -1,116 +1,512 @@
+<!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="style.css">
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Generate obstacle	type				//
-	//////////////////////////////////////////////////////////////////////////////////
-	function generateObstacleType(){
-		var generatedObstacle = null;
-		var obstacleNumber = Math.floor((Math.random() * 7) + 1);
-		//var obstacleNumber = 5
-		switch (obstacleNumber) {
-			case 1:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrate0()
-				break
-			case 2:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrate1()
-				break
-			case 3:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrateLaser()
-				break
-			case 4:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrateWall()
-				break
-			case 5:
-				specialObstacle = "mistake"
-				generatedObstacle = THREEx.Crates.createCrateMetal()
-				break
-			case 6:
-				specialObstacle = "heart"
-				generatedObstacle = THREEx.Crates.createCrateHeart()
-				break
-			case 7:
-				specialObstacle = "star"
-				generatedObstacle = THREEx.Crates.createCrateFlash()
-				break
-		}
-		return [generatedObstacle, specialObstacle, obstacleNumber];
+<body>
+	<div id="loading"><img src="bower_components/threex.environment/images/loading.jpg" height="400px" width="800px"></div>
+	<div class="info" id="leftInfo">
+	 	<span id="score">Score: 0</span>
+	</div>
+	<div class="info" id="rightInfo">
+	 	<span id="health">&#9829;&#9829;&#9829;</span>
+	</div>
+	<div class="info" id="statistics">
+	 	<h1>GAME OVER</h1>
+		<span id="finalScore"></span><br /><br />
+		<span id="restart" onclick="gameRestart()">Restart</span>
+	</div>
+
+<script src='vendor/three.js/build/three.js'></script>
+<script src='vendor/require.js/require.js'></script>
+<script src='vendor/three.js/examples/js/Detector.js'></script>
+<script src='vendor/threex.windowresize.js'></script>
+<script src='libs/main.character.js'></script>
+<script src='libs/giant.character.js'></script>
+<script src='libs/obstacle.js'></script>
+<script src='libs/stats.js'></script>
+<script src='libs/building.js'></script>
+<script>
+require([
+	'bower_components/threex.md2character/package.require.js',
+	'bower_components/threex.crates/package.require.js',
+	'bower_components/threex.environment/package.require.js',
+	'bower_components/webaudiox/build/webaudiox.js'
+], function(){
+	// detect WebGL
+	if( !Detector.webgl ){
+		Detector.addGetWebGLMessage();
+		throw 'WebGL Not Available'
 	}
+	// setup webgl renderer full page
+	var renderer	= new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+	// setup a scene and camera
+	var scene	= new THREE.Scene();
+	var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+	camera.position.z = 8;
 
+	// declare the rendering loop
+	var onRenderFcts= [];
+
+	// handle window resize events
+	var winResize	= new THREEx.WindowResize(renderer, camera)
+
+	// declare the score
+	var score = 0
+	// declare the health
+	var health = 3
+
+	// game state
+	var catched = false
+	var killed = false
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Set vertical distance Y and minimal distance for collision by scale 			//
+	//		default 3 points lightning					//
 	//////////////////////////////////////////////////////////////////////////////////
 
-	function setObstacleVerticalDistance(obstacleScale){
-		var minDistance = 0
-		var obstaclePositionY = 0
+	var ambientLight= new THREE.AmbientLight( 0x020202 )
+	scene.add( ambientLight)
+	var frontLight	= new THREE.DirectionalLight('white', 1)
+	frontLight.position.set(0.5, 0.5, 0.5)
+	scene.add( frontLight )
+	var backLight	= new THREE.DirectionalLight('white', 0.5)
+	backLight.position.set(-0.5, -0.5, -0.5)
+	scene.add( backLight )
 
-		if(obstacleScale<=1.0){
-			obstaclePositionY = 0.9
-			minDistance = 0.6
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init city (background)						//
+		//////////////////////////////////////////////////////////////////////////////////
+
+		var city = THREEx.Environment.city()
+		scene.add(city)
+		city.position.add(new THREE.Vector3(-20, 25, 0))
+		onRenderFcts.push(function(delta, now){
+			city.position.z = mainCharacter.character.object3d.position.z
+		})
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Create main character model 						//
+		//////////////////////////////////////////////////////////////////////////////////
+
+		var mainCharacter =  new THREEx.MD2CharacterRatmahatta()
+		scene.add(mainCharacter.character.object3d)
+		onRenderFcts.push(function(delta){
+			mainCharacter.update(delta)
+		})
+		// Setup character model
+		var defaultPosition = defaultValuesMainCharacter(mainCharacter)
+		// controls.input based on keyboard (libs/main.character.js)
+		setMainCharacterControl(mainCharacter)
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init road (floor)					//
+		//////////////////////////////////////////////////////////////////////////////////
+		function generateRoad(z){
+			var road = THREEx.Environment.road()
+			scene.add(road)
+			var velocity	= new THREE.Vector3(0, 0, z);
+			road.position.add(velocity)
+			road.rotation.x = -1.57
 		}
-		if(obstacleScale>1.0){
-			obstaclePositionY = 1.2
+
+		//generating next road
+		generateRoad(mainCharacter.character.object3d.position.z-35)
+		generateRoad(mainCharacter.character.object3d.position.z+5)
+	  var roadScale = 0
+		onRenderFcts.push(function(delta, now){
+			if(roadScale<mainCharacter.character.object3d.position.z){
+				generateRoad(mainCharacter.character.object3d.position.z+38)
+				roadScale+=38
+			}
+		})
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init buildings (sider)					//
+		//////////////////////////////////////////////////////////////////////////////////
+		function generateBuilding(x,z){
+			var buildings = THREEx.Environment.building()
+			scene.add(buildings)
+			var velocity	= new THREE.Vector3(x, generateBuildingHeight(), z)
+			buildings.position.add(velocity)
+			//buildings.rotation.x = -1.57
+			if(x > 0) {
+				x=0-x
+				generateBuilding(x,z)
+			}
+		}
+
+		//first few buildings
+		function generateFewBuildings(defaultPosition){
+			for(var i=-55; i<=21; i+=15.2){
+				var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
+				generateBuilding(randX,defaultPosition+i)
+			}
+		}
+
+		//generating next buildings
+		generateFewBuildings(defaultPosition)
+		var buildingScale = 15.2
+		onRenderFcts.push(function(delta, now){
+			if(buildingScale<mainCharacter.character.object3d.position.z){
+				var randX = (Math.random() * (12.000 - 11.000) + 11.000).toFixed(4)
+				generateBuilding(randX,mainCharacter.character.object3d.position.z+20)
+				buildingScale+=15.2
+			}
+		})
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Create giant character model							//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var giantCharacter =  new THREEx.MD2CharacterRatmahatta()
+	scene.add(giantCharacter.character.object3d)
+	onRenderFcts.push(function(delta){
+		giantCharacter.update(delta)
+	})
+  defaultValuesGiantCharacter(giantCharacter)
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		animation based on velocity					//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var crwalking = false
+	onRenderFcts.push(function(delta, now){
+		if(killed){
+			mainCharacter.setAnimationName('salute')
+		}else{
+			var inputs	= mainCharacter.controls.inputs
+			if( inputs.up || inputs.down || inputs.left || inputs.right ){
+				if(crwalking==true){
+					mainCharacter.setAnimationName('crwalk')
+				}else{
+					mainCharacter.setAnimationName('run')
+				}
+			}else {
+				mainCharacter.setAnimationName('stand')
+			}
+			if( inputs.up ) score += Math.round(mainCharacter.character.object3d.position.z/10)
+			if( inputs.down ) score -= Math.round(mainCharacter.character.object3d.position.z/10)
+			if( inputs.jump )	mainCharacter.setAnimationName('jump')
+		}
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Collision between character and obstacle				//
+	//////////////////////////////////////////////////////////////////////////////////
+  var minDistance = 0
+  var oldTime = 0
+	var specialObstacle = ""
+	onRenderFcts.push(function(delta, now){
+		// only if the character is loaded
+		if (mainCharacter === null) return
+		// compute distance between character and the obstacle
+
+		var distance = mainCharacter.character.object3d.position.distanceTo(obstacle.position)
+
+		if (obstacleNumber==5){
+			minDistance = 2
+		}
+
+		if (obstacleNumber==4){
+			var distanceZ = obstacle.position.z + mainCharacter.character.object3d.position.z
+			if(
+					(mainCharacter.character.object3d.position.z>=obstacle.position.z-0.5)&&
+					(mainCharacter.character.object3d.position.z<=obstacle.position.z+0.5)&&
+					(mainCharacter.character.object3d.position.y<=0.01)
+				)
+				distance = minDistance
+		}
+		if(obstacleNumber!=5&&obstacleNumber!=4){
+			if (distance <= minDistance*2) {
+				obstacle.material.opacity -= 0.1
+			}else{
+				if(obstacle.material.opacity <= 0.9){
+					obstacle.material.opacity+= 0.1
+				}
+			}
+		}
+		if (distance <= minDistance) {
+			playSound()
+			oldTime = useObstacle(mainCharacter,specialObstacle)
+			if(specialObstacle=="mistake") crwalking=true
+			if(specialObstacle=="heart") health = incHealth()
+			destroyObstacle()
+			createObstacle()
+		}
+		if (oldTime+4000 < getActualTime() && oldTime!=0){
+			oldTime = 0
+			crwalking=false
+			useObstacle(mainCharacter,"default")
+		}
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Create obstacle	model				//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var obstacle = null
+	var obstacleNumber = 0
+	function createObstacle(){
+		obstacleValues = generateObstacleType()
+		obstacle = obstacleValues[0]
+		specialObstacle = obstacleValues[1]
+		obstacleNumber = obstacleValues[2]
+		scene.add(obstacle)
+		obstacle.position.x	= 0.00
+		var obstacleScale = (Math.random() * (1.500 - 0.500) + 0.500).toFixed(4)
+		var obstacleValues = setObstacleVerticalDistance(obstacleScale)
+		//obstacle.position.y = obstacleValues[0]
+		if(obstacleNumber==5){
+			obstacle.position.y = 2
+		}else{
+			obstacle.position.y = 1
+		}
+		//minDistance = obstacleValues[1]
+		if(obstacleNumber==4){
+			minDistance = 0.5
+		}else{
 			minDistance = 0.8
 		}
-		if(obstacleScale>1.5){
-			obstaclePositionY = 1.4
-			minDistance = 1.2
+		//obstacle.geometry = new THREE.CubeGeometry( obstacleScale, obstacleScale, obstacleScale);
+		resetObstacle()
+	}
+	createObstacle()
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Reset obstacle	funciton				//
+	//////////////////////////////////////////////////////////////////////////////////
+	function resetObstacle(){
+		var distanceX = generateObstacleDistance(obstacleNumber)
+		var distanceY = -0.50
+		if (obstacleNumber==4) {
+			distanceX = 0
+			distanceY = -0.75
 		}
-		return [obstaclePositionY,minDistance];
+		if (obstacleNumber==2) {
+			moveZ = (Math.random() >= 0.5) ? true : false
+		}
+		var z = mainCharacter.character.object3d.position.z+14;
+		var velocity	= new THREE.Vector3(distanceX, distanceY, z);
+		obstacle.position.add(velocity)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		Set random horizontal distance X 			 			 			 			 			 			 			//
+	//		Destroy obstacle				//
+	//////////////////////////////////////////////////////////////////////////////////
+	function destroyObstacle(){
+		distance = 0.00
+		scene.remove( obstacle )
+		obstacle.position.add(new THREE.Vector3(0, 0, 0))
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Auto move obstacle						//
+	//////////////////////////////////////////////////////////////////////////////////
+	var moveX = false
+	var moveZ = false
+	function laserMovement(delta){
+		var obstacleMovementPositionX
+		if(obstacle.position.x<=-3.2){
+			moveX = true
+		}
+		if(obstacle.position.x>=2.5){
+			moveX = false
+		}
+		if(moveX){
+			obstacleMovementPositionX = delta * 5.5;
+			if(obstacleNumber==3)obstacle.rotation.z	-= Math.PI*2*0.5*delta
+		}else{
+			obstacleMovementPositionX = delta * -5.5;
+			if(obstacleNumber==3)obstacle.rotation.z	+= Math.PI*2*0.5*delta
+		}
+		return obstacleMovementPositionX
+	}
+
+	var distance = 0.0
+	var farAway = false
+  var obTimer = 0
+
+	onRenderFcts.push(function(delta, now){
+		// move the obstacle to back
+		distance += -1 * delta * 0.0008
+		if(obstacleNumber==2){
+			var obstacleMovementPositionX = laserMovement(delta)
+			var obstacleMovementPositionZ = moveZ ? -obstacleMovementPositionX : obstacleMovementPositionX
+			if (obstacleMovementPositionX){
+					var velocity	= new THREE.Vector3(obstacleMovementPositionX*1.2, 0, obstacleMovementPositionZ);
+					obstacle.position.add(velocity)
+			}
+		}
+		if(obstacleNumber==3){
+			var obstacleMovementPositionX = laserMovement(delta)
+			if (obstacleMovementPositionX){
+					var velocity	= new THREE.Vector3(obstacleMovementPositionX*0.6, 0, 0);
+					obstacle.position.add(velocity)
+			}
+		}
+		//var velocity	= new THREE.Vector3(0, 0, distance);
+		//obstacle.position.add(velocity)
+		if(obstacleNumber>=6){
+			obstacle.rotation.y	-= Math.PI*2*0.5*delta
+		}
+
+		// make it warp
+		if (mainCharacter.character.object3d.position.z>obstacle.position.z+10) {
+			farAway = true
+			if(farAway){
+				obstacle.material.visible = true
+
+				obTimer++
+				if ((obTimer >= 10 && obTimer < 15)||(obTimer >= 20 && obTimer < 25)||
+						(obTimer >= 30 && obTimer < 35)||(obTimer >= 40 && obTimer < 50))
+						obstacle.material.visible = false
+			}
+			if(obTimer>=50){
+				obstacle.material.visible = false
+				farAway = false
+				obTimer = 0
+			}
+			if (mainCharacter.character.object3d.position.z>obstacle.position.z+17) {
+				destroyObstacle()
+				createObstacle()
+			}
+		}
+	})
+
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Giant character change						//
+		//////////////////////////////////////////////////////////////////////////////////
+		var giantSpeed = 8.5
+		onRenderFcts.push(function(delta, now){
+			giantSpeed += 0.001
+			var distance	= giantSpeed * delta
+			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+36){
+				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
+			}else{
+				var velocity	= new THREE.Vector3(0, 0, distance)
+				giantCharacter.character.object3d.position.add(velocity)
+			}
+			giantCharacter.character.object3d.position.y = 4.5
+			if(catched || score<50 || killed){
+				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
+				giantCharacter.setAnimationName('flip')
+				giantSpeed = 8.5
+			}else{
+				giantCharacter.setAnimationName('run')
+			}
+		})
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Collision between main character and giant				//
+		//////////////////////////////////////////////////////////////////////////////////
+		var timer = 0
+		onRenderFcts.push(function(delta, now){
+			// only if the character is loaded
+			if (mainCharacter === null) return
+			// compute distance between character and the obstacle
+			if(mainCharacter.character.object3d.position.z<=giantCharacter.character.object3d.position.z+2){
+				catched = true
+			}
+			if(catched){
+				mainCharacter.setSkinName('dead')
+				timer++
+				if ((timer >= 20 && timer < 40)||(timer >= 60 && timer < 80)||
+						(timer >= 100 && timer < 120)||(timer >= 140 && timer < 160))
+					mainCharacter.setSkinName('ratamahatta')
+			}
+			if(timer==1){
+				health = decHealth()
+			}
+			if(timer>=160){
+				mainCharacter.setSkinName('ratamahatta')
+				catched = false
+				timer = 0
+			}
+		})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init sound						//
 	//////////////////////////////////////////////////////////////////////////////////
 
-function generateObstacleDistance(obstacleNumber){
-  var rand = 0
-	var distance = 0
-	if(obstacleNumber==5){
-		rand = Math.floor((Math.random() * 2) + 1);
-		distance = (rand == 1) ? distance = 1.8 : distance = -1.8
-	}else if(obstacleNumber==3){
-		distance = -2
-	}else{
-		rand = Math.random()
-		if(rand<0.5)  distance = 3.00 * Math.random()
-		if(rand>=0.5)  distance = -3.00 * Math.random()
-	}
-	return distance
-}
+	var context = new AudioContext()
+	var lineOut = new WebAudiox.LineOut(context)
+	lineOut.volume = 0.2
 
-//////////////////////////////////////////////////////////////////////////////////
-//		Use obstacle																								   						//
-//////////////////////////////////////////////////////////////////////////////////
-function getActualTime(){
-	var d = new Date();
-  return d.getTime();
-}
+	var soundBuffer;
+	// load the sound
+	var soundUrl = 'bower_components/webaudiox/sounds/pick_goods.mp3'
+	WebAudiox.loadBuffer(context, soundUrl, function(buffer){
+		soundBuffer = buffer
+	})
 
-function useObstacle(mainCharacter,specialObstacle){
-mainCharacter.character.object3d.position.y = 0
-mainCharacter.character.animationFPS = 10
-	if(specialObstacle == "default"){
-		mainCharacter.setSkinName('ratamahatta')
-		mainCharacter.setWeaponName('none')
-		mainCharacter.controls.linearSpeed = 5.5
+	// setup a play function
+	function playSound(){
+		if (!soundBuffer) return
+		var source = context.createBufferSource()
+		source.buffer = soundBuffer
+		source.connect(lineOut.destination)
+		source.start(0)
+		return source
 	}
-	if(specialObstacle == "mistake"){
-		mainCharacter.setSkinName('ratamahatta')
-		mainCharacter.setWeaponName('none')
-		mainCharacter.controls.linearSpeed = 1.5
-	}
-	if(specialObstacle == "heart"){
-		mainCharacter.setSkinName('ctf_b')
-		mainCharacter.setWeaponName('w_hyperblaster')
-	}
-	if(specialObstacle == "star"){
-		mainCharacter.setSkinName('ctf_r')
-		mainCharacter.setWeaponName('none')
-		mainCharacter.controls.linearSpeed = 15
-	}
-  return getActualTime()
-}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Camera Controls							//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var cameraDistance = 0.0
+	var mouse	= {x : 0, y : 0}
+	document.addEventListener('mousemove', function(event){
+	  mouse.x	= (event.clientX / window.innerWidth ) - 0.5
+		mouse.y	= (event.clientY / window.innerHeight) - 0.5
+	}, false)
+
+	var cameraLimitY = 0.22232557270104733
+	camera.position.y = 3
+
+	onRenderFcts.push(function(delta, now){
+ 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
+		if (camera.position.y>= cameraLimitY){
+			camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
+		}else{
+			camera.position.y -= (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
+		}
+		if(camera.position.y < 0) camera.position.y = cameraLimitY
+		// Basics for ZoomOut cam
+		camera.position.z = mainCharacter.character.object3d.position.z+15
+		camera.lookAt( scene.position )
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the scene						//
+	//////////////////////////////////////////////////////////////////////////////////
+	onRenderFcts.push(function(){
+		renderer.render( scene, camera );
+		document.getElementById('score').innerHTML = "Score: " + score
+		if(health==0) {
+			gameOver(score)
+      killed = true
+		}
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Rendering Loop runner						//
+	//////////////////////////////////////////////////////////////////////////////////
+	var lastTimeMsec= null
+	requestAnimationFrame(function animate(nowMsec){
+		// keep looping
+		requestAnimationFrame( animate );
+		// measure time
+		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+		lastTimeMsec	= nowMsec
+		// call each update function
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		})
+	})
+})
+</script>
+</body>
