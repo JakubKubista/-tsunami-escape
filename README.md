@@ -52,4 +52,8 @@ The game based on basics of WebGL and 3D models on three.js.
 ---
 **Acknowledgement**
 
+<<<<<<< HEAD
 • Thanks for all advices and codes to Jerome Etienne and David Prochazka for this study purpose.
+=======
+• Thanks for all advices and codes to Jerome Etienne and David Prochazka for this study purpose.
+>>>>>>> 0e44d2866f5089c79af7c9df7b958c84c9339eb9
