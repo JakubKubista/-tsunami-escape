@@ -6,6 +6,7 @@ function defaultValuesMainCharacter(mainCharacter){
 	mainCharacter.character.object3d.position.x = 0
 	mainCharacter.character.object3d.position.y = 0
 	mainCharacter.character.object3d.position.z = -1
+	mainCharacter.character.object3d.castShadow = true
 
 	mainCharacter.character.addEventListener('loaded', function(){
 		mainCharacter.setSkinName('ratamahatta')

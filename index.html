@@ -38,6 +38,8 @@ require([
 	}
 	// setup webgl renderer full page
 	var renderer	= new THREE.WebGLRenderer();
+	renderer.shadowMapEnabled = true;
+	renderer.shadowMapType = THREE.PCFSoftShadowMap;
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 	// setup a scene and camera
@@ -59,24 +61,95 @@ require([
 	// game state
 	var catched = false
 	var killed = false
+	var playMusic = false
+	var musicNumber = 1
 	//////////////////////////////////////////////////////////////////////////////////
 	//		default 3 points lightning					//
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var ambientLight= new THREE.AmbientLight( 0x020202 )
 	scene.add( ambientLight)
+
 	var frontLight	= new THREE.DirectionalLight('white', 1)
 	frontLight.position.set(0.5, 0.5, 0.5)
+	frontLight.castShadow = true
 	scene.add( frontLight )
+
 	var backLight	= new THREE.DirectionalLight('white', 0.5)
 	backLight.position.set(-0.5, -0.5, -0.5)
 	scene.add( backLight )
+
+	frontLight.shadowMapSize = new THREE.Vector2( 512, 512 )
+	frontLight.shadowCamera = new THREE.OrthographicCamera( 0, 0, 0, 0, 0.5, 500 )
+
+	var pointLight	= new THREE.SpotLight('white', 0.1)
+	pointLight.position.set(0,5,5)
+	scene.add( pointLight )
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init sound						//
+		//////////////////////////////////////////////////////////////////////////////////
+
+		var context = new AudioContext()
+		var lineOut = new WebAudiox.LineOut(context)
+		lineOut.volume = 0.2
+
+		var goodSoundBuffer;
+		var badSoundBuffer;
+		var catchedSoundBuffer;
+		var laughSoundBuffer;
+		var music1Buffer;
+		var music2Buffer;
+		var music3Buffer;
+		var soundBuffer;
+
+		// load the sound
+		var goodSoundUrl = 'bower_components/webaudiox/sounds/pick_goods.mp3'
+		var badSoundUrl = 'bower_components/webaudiox/sounds/pick_bads.mp3'
+		var catchedSoundUrl = 'bower_components/webaudiox/sounds/laugh.mp3'
+		var music1Url = 'bower_components/webaudiox/sounds/CamelsStrawsAndBacks_min.mp3'
+		var music2Url = 'bower_components/webaudiox/sounds/Ruinion_min.mp3'
+		var music3Url = 'bower_components/webaudiox/sounds/BubbleChum_min.mp3'
+
+		WebAudiox.loadBuffer(context, goodSoundUrl, function(buffer){
+			goodSoundBuffer = buffer
+		})
+		WebAudiox.loadBuffer(context, badSoundUrl, function(buffer){
+			badSoundBuffer = buffer
+		})
+		WebAudiox.loadBuffer(context, catchedSoundUrl, function(buffer){
+			catchedSoundBuffer = buffer
+		})
+		WebAudiox.loadBuffer(context, music1Url, function(buffer){
+			music1Buffer = buffer
+		})
+		WebAudiox.loadBuffer(context, music2Url, function(buffer){
+			music2Buffer = buffer
+		})
+		WebAudiox.loadBuffer(context, music3Url, function(buffer){
+			music3Buffer = buffer
+		})
+
+		// setup a play function
+		function playSound(type){
+			if(type=="good") soundBuffer = goodSoundBuffer
+			if(type=="bad") soundBuffer = badSoundBuffer
+			if(type=="catched") soundBuffer = catchedSoundBuffer
+			if(type=="music1") soundBuffer = music1Buffer
+			if(type=="music2") soundBuffer = music2Buffer
+			if(type=="music3") soundBuffer = music3Buffer
+			if (!soundBuffer) return
+			var source = context.createBufferSource()
+			source.buffer = soundBuffer
+			source.connect(lineOut.destination)
+			source.start(0)
+			return source
+		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////
 		//		Init city (background)						//
 		//////////////////////////////////////////////////////////////////////////////////
-
 		var city = THREEx.Environment.city()
 		scene.add(city)
 		city.position.add(new THREE.Vector3(-20, 25, 0))
@@ -103,6 +176,7 @@ require([
 		//////////////////////////////////////////////////////////////////////////////////
 		function generateRoad(z){
 			var road = THREEx.Environment.road()
+			road.receiveShadow =  true
 			scene.add(road)
 			var velocity	= new THREE.Vector3(0, 0, z);
 			road.position.add(velocity)
@@ -162,6 +236,12 @@ require([
 	var giantCharacter =  new THREEx.MD2CharacterRatmahatta()
 	scene.add(giantCharacter.character.object3d)
 	onRenderFcts.push(function(delta){
+			if(!playMusic && music1Buffer){
+				var musicName = "music" + musicNumber
+				playSound(musicName)
+				playMusic = true
+				musicNumber++
+			}
 		giantCharacter.update(delta)
 	})
   defaultValuesGiantCharacter(giantCharacter)
@@ -227,9 +307,13 @@ require([
 			}
 		}
 		if (distance <= minDistance) {
-			playSound()
 			oldTime = useObstacle(mainCharacter,specialObstacle)
-			if(specialObstacle=="mistake") crwalking=true
+			if(specialObstacle=="mistake"){
+				crwalking=true
+				playSound("bad")
+			}else{
+				playSound("good")
+			}
 			if(specialObstacle=="heart") health = incHealth()
 			destroyObstacle()
 			createObstacle()
@@ -254,6 +338,7 @@ require([
 		obstacleNumber = obstacleValues[2]
 		scene.add(obstacle)
 		obstacle.position.x	= 0.00
+		obstacle.castShadow = true
 		var obstacleScale = (Math.random() * (1.500 - 0.500) + 0.500).toFixed(4)
 		var obstacleValues = setObstacleVerticalDistance(obstacleScale)
 		//obstacle.position.y = obstacleValues[0]
@@ -335,14 +420,14 @@ require([
 			var obstacleMovementPositionX = laserMovement(delta)
 			var obstacleMovementPositionZ = moveZ ? -obstacleMovementPositionX : obstacleMovementPositionX
 			if (obstacleMovementPositionX){
-					var velocity	= new THREE.Vector3(obstacleMovementPositionX*1.2, 0, obstacleMovementPositionZ);
+					var velocity	= new THREE.Vector3(obstacleMovementPositionX*3, 0, obstacleMovementPositionZ);
 					obstacle.position.add(velocity)
 			}
 		}
 		if(obstacleNumber==3){
 			var obstacleMovementPositionX = laserMovement(delta)
 			if (obstacleMovementPositionX){
-					var velocity	= new THREE.Vector3(obstacleMovementPositionX*0.6, 0, 0);
+					var velocity	= new THREE.Vector3(obstacleMovementPositionX, 0, 0);
 					obstacle.position.add(velocity)
 			}
 		}
@@ -409,6 +494,7 @@ require([
 			// compute distance between character and the obstacle
 			if(mainCharacter.character.object3d.position.z<=giantCharacter.character.object3d.position.z+2){
 				catched = true
+				playSound("catched")
 			}
 			if(catched){
 				mainCharacter.setSkinName('dead')
@@ -427,30 +513,6 @@ require([
 			}
 		})
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Init sound						//
-	//////////////////////////////////////////////////////////////////////////////////
-
-	var context = new AudioContext()
-	var lineOut = new WebAudiox.LineOut(context)
-	lineOut.volume = 0.2
-
-	var soundBuffer;
-	// load the sound
-	var soundUrl = 'bower_components/webaudiox/sounds/pick_goods.mp3'
-	WebAudiox.loadBuffer(context, soundUrl, function(buffer){
-		soundBuffer = buffer
-	})
-
-	// setup a play function
-	function playSound(){
-		if (!soundBuffer) return
-		var source = context.createBufferSource()
-		source.buffer = soundBuffer
-		source.connect(lineOut.destination)
-		source.start(0)
-		return source
-	}
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
@@ -490,11 +552,12 @@ require([
       killed = true
 		}
 	})
-
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Rendering Loop runner						//
 	//////////////////////////////////////////////////////////////////////////////////
 	var lastTimeMsec= null
+	var secondMusic = false
+	var thirdMusic = false
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
 		requestAnimationFrame( animate );
@@ -502,6 +565,15 @@ require([
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
 		lastTimeMsec	= nowMsec
+		if(Math.floor(nowMsec*0.001)==58 && secondMusic ==false) {
+			playMusic = false
+			secondMusic = true
+		}
+		if(Math.floor(nowMsec*0.001)==117 && thirdMusic ==false) {
+			playMusic = false
+			thirdMusic = true
+		}
+		//console.log(nowMsec*0.001)
 		// call each update function
 		onRenderFcts.forEach(function(onRenderFct){
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
