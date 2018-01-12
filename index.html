@@ -37,7 +37,7 @@ require([
 		throw 'WebGL Not Available'
 	}
 	// setup webgl renderer full page
-	var renderer	= new THREE.WebGLRenderer();
+	var renderer	= new THREE.WebGLRenderer( { antialias: true } );
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapType = THREE.PCFSoftShadowMap;
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -45,7 +45,6 @@ require([
 	// setup a scene and camera
 	var scene	= new THREE.Scene();
 	var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
-	camera.position.z = 8;
 
 	// declare the rendering loop
 	var onRenderFcts= [];
@@ -73,6 +72,7 @@ require([
 	var frontLight	= new THREE.DirectionalLight('white', 1)
 	frontLight.position.set(0.5, 0.5, 0.5)
 	frontLight.castShadow = true
+	frontLight.shadowCameraVisible = true
 	scene.add( frontLight )
 
 	var backLight	= new THREE.DirectionalLight('white', 0.5)
@@ -80,11 +80,14 @@ require([
 	scene.add( backLight )
 
 	frontLight.shadowMapSize = new THREE.Vector2( 512, 512 )
-	frontLight.shadowCamera = new THREE.OrthographicCamera( 0, 0, 0, 0, 0.5, 500 )
-
+	frontLight.shadowCamera = new THREE.OrthographicCamera( 5, 5, 0, 0, 0.5, 500 )
 	var pointLight	= new THREE.SpotLight('white', 0.1)
 	pointLight.position.set(0,5,5)
 	scene.add( pointLight )
+
+	var blackLight	= new THREE.DirectionalLight('black', 1)
+	blackLight.position.set(0, 1, 0)
+	scene.add( blackLight )
 
 		//////////////////////////////////////////////////////////////////////////////////
 		//		Init sound						//
@@ -520,24 +523,55 @@ require([
 
 	var cameraDistance = 0.0
 	var mouse	= {x : 0, y : 0}
+	var resetView = false
+	var cameraDefaultY = 3
+	var cameraDefaultZ = 15
+
 	document.addEventListener('mousemove', function(event){
 	  mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
 	}, false)
 
+	document.body.addEventListener('keydown', function(event){
+		if( event.keyCode === 88 ){
+			if(resetView){
+				resetView = false
+			}else{
+				resetView = true
+			}
+		}
+		if( event.keyCode === 67 ){
+			if(cameraDefaultZ>=7){
+				cameraDefaultY -= 0.5
+				cameraDefaultZ -= 2
+			}
+		}
+		if( event.keyCode === 86 ){
+			if(cameraDefaultZ<=15){
+				cameraDefaultY += 0.5
+				cameraDefaultZ += 2
+			}
+		}
+	})
+
 	var cameraLimitY = 0.22232557270104733
-	camera.position.y = 3
 
 	onRenderFcts.push(function(delta, now){
- 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
-		if (camera.position.y>= cameraLimitY){
-			camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
+		if((mouse.x==0 && mouse.y==0) || (resetView)){
+			camera.position.x = 0
+			camera.position.y = cameraDefaultY
 		}else{
-			camera.position.y -= (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
+	 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
+			if (camera.position.y>= cameraLimitY){
+				camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
+			}else{
+				camera.position.y -= (-((mouse.y*5 - camera.position.y) * (delta*3)) - cameraLimitY)/100
+			}
+			if(camera.position.y < 0) camera.position.y = cameraLimitY
 		}
-		if(camera.position.y < 0) camera.position.y = cameraLimitY
 		// Basics for ZoomOut cam
-		camera.position.z = mainCharacter.character.object3d.position.z+15
+		camera.position.z = mainCharacter.character.object3d.position.z + cameraDefaultZ
+		console.log("cameraDefaultZ "+ cameraDefaultZ)
 		camera.lookAt( scene.position )
 	})
 
