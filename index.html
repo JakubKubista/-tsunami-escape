@@ -12,15 +12,21 @@
 	<div class="info" id="hint">
 	 	<span id="pausespan" onclick="gamePause()">Pause (P)</span>
 	</div>
+	<div class="info" id="enterence">
+	 	<h1>APOCALYPSE ESCAPE</h1><br /><br />
+		<span id="hoverButton" onclick="gameStarted()">Start</span><br /><br />
+		<span id="hoverButton" onclick="gameControls(1)">Controls</span>
+	</div>
 	<div class="info" id="pause">
 	 	<h1>GAME PAUSED</h1>
-		<span id="hoverButton" onclick="gameControls(true)">Controls</span><br /><br />
+		<span id="hoverButton" onclick="gameControls(2)">Controls</span><br /><br />
 		<span id="hoverButton" onclick="gameRestart()">Restart</span><br /><br />
 		<span id="hoverButton" onclick="gameContinue()">Continue</span>
 	</div>
 	<div class="info" id="controls">
 	 	<h1>Controls</h1>
 		<div class="row">
+			<div class="column">&#8203;</div>
 		  <div class="column">
 				&#8593; or W (run) <br /><br />
 				&#x2190; or A (left) <br /><br />
@@ -31,10 +37,12 @@
 				X (fixed cam) <br /><br />
 				C (zoom input) <br /><br />
 				V (zoom out)<br /><br />
-				N (hurt you) <br /><br /><br /><br />
+				N (hurt you)
 			</div>
+			<div class="column">&#8203;</div>
 		</div>
-		<span id="hoverButton" onclick="gameControls(false)">Back</span>
+		<span class="back" id="enterenceBack" onclick="gameControls(3)">Back</span>
+		<span class="back" id="pauseBack" onclick="gameControls(4)">Back</span>
 	</div>
 	<div class="info" id="statistics">
 	 	<h1>GAME OVER</h1>
@@ -492,7 +500,7 @@ require([
 					giantCharacter.character.object3d.position.add(velocity)
 				}
 				giantCharacter.character.object3d.position.y = 4.5
-				if(catched || score<50 || killed){
+				if(catched || killed){
 					giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
 					giantCharacter.setAnimationName('flip')
 					giantSpeed = 8.5
@@ -570,7 +578,6 @@ require([
 			}
 		}
 	})
-
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
 	//////////////////////////////////////////////////////////////////////////////////
@@ -603,6 +610,10 @@ require([
 		}
 		// Basics for ZoomOut cam
 		camera.position.z = mainCharacter.character.object3d.position.z + cameraDefaultZ
+		if(getLoaded()){
+			camera.position.y = 2
+			camera.position.z = 7
+		}
 		camera.lookAt( scene.position )
 	})
 
