@@ -24,6 +24,7 @@
 <script src='libs/obstacle.js'></script>
 <script src='libs/stats.js'></script>
 <script src='libs/building.js'></script>
+<script src='libs/audio.js'></script>
 <script>
 require([
 	'bower_components/threex.md2character/package.require.js',
@@ -81,6 +82,8 @@ require([
 
 	frontLight.shadowMapSize = new THREE.Vector2( 512, 512 )
 	frontLight.shadowCamera = new THREE.OrthographicCamera( 5, 5, 0, 0, 0.5, 500 )
+
+	/*
 	var pointLight	= new THREE.SpotLight('white', 0.1)
 	pointLight.position.set(0,5,5)
 	scene.add( pointLight )
@@ -88,59 +91,43 @@ require([
 	var blackLight	= new THREE.DirectionalLight('black', 1)
 	blackLight.position.set(0, 1, 0)
 	scene.add( blackLight )
+	*/
 
 		//////////////////////////////////////////////////////////////////////////////////
-		//		Init sound						//
+		//		Init sound	- libs/audio.js					//
 		//////////////////////////////////////////////////////////////////////////////////
-
 		var context = new AudioContext()
 		var lineOut = new WebAudiox.LineOut(context)
 		lineOut.volume = 0.2
 
-		var goodSoundBuffer;
-		var badSoundBuffer;
-		var catchedSoundBuffer;
-		var laughSoundBuffer;
-		var music1Buffer;
-		var music2Buffer;
-		var music3Buffer;
-		var soundBuffer;
-
-		// load the sound
-		var goodSoundUrl = 'bower_components/webaudiox/sounds/pick_goods.mp3'
-		var badSoundUrl = 'bower_components/webaudiox/sounds/pick_bads.mp3'
-		var catchedSoundUrl = 'bower_components/webaudiox/sounds/laugh.mp3'
-		var music1Url = 'bower_components/webaudiox/sounds/CamelsStrawsAndBacks_min.mp3'
-		var music2Url = 'bower_components/webaudiox/sounds/Ruinion_min.mp3'
-		var music3Url = 'bower_components/webaudiox/sounds/BubbleChum_min.mp3'
-
-		WebAudiox.loadBuffer(context, goodSoundUrl, function(buffer){
-			goodSoundBuffer = buffer
+		// load buffers
+		WebAudiox.loadBuffer(context, getGoodSoundUrl(), function(buffer){
+			setGoodSoundBuffer(buffer)
 		})
-		WebAudiox.loadBuffer(context, badSoundUrl, function(buffer){
-			badSoundBuffer = buffer
+		WebAudiox.loadBuffer(context, getBadSoundUrl(), function(buffer){
+			setBadSoundBuffer(buffer)
 		})
-		WebAudiox.loadBuffer(context, catchedSoundUrl, function(buffer){
-			catchedSoundBuffer = buffer
+		WebAudiox.loadBuffer(context, getCatchedSoundUrl(), function(buffer){
+			setCatchedSoundBuffer(buffer)
 		})
-		WebAudiox.loadBuffer(context, music1Url, function(buffer){
-			music1Buffer = buffer
+		WebAudiox.loadBuffer(context, getMusic1Url(), function(buffer){
+			setMusic1Buffer(buffer)
 		})
-		WebAudiox.loadBuffer(context, music2Url, function(buffer){
-			music2Buffer = buffer
+		WebAudiox.loadBuffer(context, getMusic2Url(), function(buffer){
+			setMusic2Buffer(buffer)
 		})
-		WebAudiox.loadBuffer(context, music3Url, function(buffer){
-			music3Buffer = buffer
+		WebAudiox.loadBuffer(context, getMusic3Url(), function(buffer){
+			setMusic3Buffer(buffer)
 		})
 
-		// setup a play function
+		// play function
 		function playSound(type){
-			if(type=="good") soundBuffer = goodSoundBuffer
-			if(type=="bad") soundBuffer = badSoundBuffer
-			if(type=="catched") soundBuffer = catchedSoundBuffer
-			if(type=="music1") soundBuffer = music1Buffer
-			if(type=="music2") soundBuffer = music2Buffer
-			if(type=="music3") soundBuffer = music3Buffer
+			if(type=="good") soundBuffer = getGoodSoundBuffer()
+			if(type=="bad") soundBuffer = getBadSoundBuffer()
+			if(type=="catched") soundBuffer = getCatchedSoundBuffer()
+			if(type=="music1") soundBuffer = getMusic1Buffer()
+			if(type=="music2") soundBuffer = getMusic2Buffer()
+			if(type=="music3") soundBuffer = getMusic3Buffer()
 			if (!soundBuffer) return
 			var source = context.createBufferSource()
 			source.buffer = soundBuffer
@@ -148,7 +135,6 @@ require([
 			source.start(0)
 			return source
 		}
-
 
 		//////////////////////////////////////////////////////////////////////////////////
 		//		Init city (background)						//
@@ -571,7 +557,6 @@ require([
 		}
 		// Basics for ZoomOut cam
 		camera.position.z = mainCharacter.character.object3d.position.z + cameraDefaultZ
-		console.log("cameraDefaultZ "+ cameraDefaultZ)
 		camera.lookAt( scene.position )
 	})
 
@@ -607,7 +592,6 @@ require([
 			playMusic = false
 			thirdMusic = true
 		}
-		//console.log(nowMsec*0.001)
 		// call each update function
 		onRenderFcts.forEach(function(onRenderFct){
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
