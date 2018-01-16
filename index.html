@@ -9,10 +9,37 @@
 	<div class="info" id="rightInfo">
 	 	<span id="health">&#9829;&#9829;&#9829;</span>
 	</div>
+	<div class="info" id="hint">
+	 	<span id="pausespan" onclick="gamePause()">Pause (P)</span>
+	</div>
+	<div class="info" id="pause">
+	 	<h1>GAME PAUSED</h1>
+		<span id="hoverButton" onclick="gameControls(true)">Controls</span><br /><br />
+		<span id="hoverButton" onclick="gameRestart()">Restart</span><br /><br />
+		<span id="hoverButton" onclick="gameContinue()">Continue</span>
+	</div>
+	<div class="info" id="controls">
+	 	<h1>Controls</h1>
+		<div class="row">
+		  <div class="column">
+				&#8593; or W (run) <br /><br />
+				&#x2190; or A (left) <br /><br />
+				&#8594; or D (right) <br /><br />
+				SPACE (jump) <br /><br />
+			</div>
+		  <div class="column">
+				X (fixed cam) <br /><br />
+				C (zoom input) <br /><br />
+				V (zoom out)<br /><br />
+				N (hurt you) <br /><br /><br /><br />
+			</div>
+		</div>
+		<span id="hoverButton" onclick="gameControls(false)">Back</span>
+	</div>
 	<div class="info" id="statistics">
 	 	<h1>GAME OVER</h1>
 		<span id="finalScore"></span><br /><br />
-		<span id="restart" onclick="gameRestart()">Restart</span>
+		<span id="hoverButton" onclick="gameRestart()">Restart</span>
 	</div>
 
 <script src='vendor/three.js/build/three.js'></script>
@@ -455,21 +482,26 @@ require([
 		//////////////////////////////////////////////////////////////////////////////////
 		var giantSpeed = 8.5
 		onRenderFcts.push(function(delta, now){
-			giantSpeed += 0.001
-			var distance	= giantSpeed * delta
-			if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+36){
-				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
+			if(!getPaused()){
+				giantSpeed += 0.001
+				var distance	= giantSpeed * delta
+				if(mainCharacter.character.object3d.position.z>giantCharacter.character.object3d.position.z+36){
+					giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
+				}else{
+					var velocity	= new THREE.Vector3(0, 0, distance)
+					giantCharacter.character.object3d.position.add(velocity)
+				}
+				giantCharacter.character.object3d.position.y = 4.5
+				if(catched || score<50 || killed){
+					giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
+					giantCharacter.setAnimationName('flip')
+					giantSpeed = 8.5
+				}else{
+					giantCharacter.setAnimationName('run')
+				}
 			}else{
-				var velocity	= new THREE.Vector3(0, 0, distance)
-				giantCharacter.character.object3d.position.add(velocity)
-			}
-			giantCharacter.character.object3d.position.y = 4.5
-			if(catched || score<50 || killed){
-				giantCharacter.character.object3d.position.z = mainCharacter.character.object3d.position.z-35
-				giantCharacter.setAnimationName('flip')
-				giantSpeed = 8.5
-			}else{
-				giantCharacter.setAnimationName('run')
+				giantCharacter.character.object3d.position.z = giantCharacter.character.object3d.position.z
+				giantCharacter.character.object3d.position.y = 4.5
 			}
 		})
 
@@ -502,6 +534,42 @@ require([
 			}
 		})
 
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Other keydown Controls							//
+	//////////////////////////////////////////////////////////////////////////////////
+
+	document.body.addEventListener('keydown', function(event){
+		// pause
+		if( event.keyCode === 80 ){
+			if(getPaused()){
+				gameContinue()
+			}else{
+				gamePause()
+			}
+		}
+		// camera reset
+		if( event.keyCode === 88 ){
+			if(resetView){
+				resetView = false
+			}else{
+				resetView = true
+			}
+		}
+		// camera zoom out
+		if( event.keyCode === 67 ){
+			if(cameraDefaultZ>=7){
+				cameraDefaultY -= 0.5
+				cameraDefaultZ -= 2
+			}
+		}
+		// camera zoom in
+		if( event.keyCode === 86 ){
+			if(cameraDefaultZ<=15){
+				cameraDefaultY += 0.5
+				cameraDefaultZ += 2
+			}
+		}
+	})
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
@@ -517,28 +585,6 @@ require([
 	  mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
 	}, false)
-
-	document.body.addEventListener('keydown', function(event){
-		if( event.keyCode === 88 ){
-			if(resetView){
-				resetView = false
-			}else{
-				resetView = true
-			}
-		}
-		if( event.keyCode === 67 ){
-			if(cameraDefaultZ>=7){
-				cameraDefaultY -= 0.5
-				cameraDefaultZ -= 2
-			}
-		}
-		if( event.keyCode === 86 ){
-			if(cameraDefaultZ<=15){
-				cameraDefaultY += 0.5
-				cameraDefaultZ += 2
-			}
-		}
-	})
 
 	var cameraLimitY = 0.22232557270104733
 

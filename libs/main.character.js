@@ -24,12 +24,12 @@ function setMainCharacterControl(mainCharacter){
 	document.body.addEventListener('keydown', function(event){
 		var inputs	= mainCharacter.controls.inputs
 		if( event.keyCode === 'W'.charCodeAt(0) )	inputs.up	= true
-		if( event.keyCode === 'S'.charCodeAt(0) )	inputs.down	= true
+		//if( event.keyCode === 'S'.charCodeAt(0) )	inputs.down	= true
 		if( event.keyCode === 'A'.charCodeAt(0) )	inputs.left	= true
 		if( event.keyCode === 'D'.charCodeAt(0) )	inputs.right	= true
 		// to support arrows
 		if( event.keyCode === 38 )	inputs.up	= true
-		if( event.keyCode === 40 )	inputs.down	= true
+		//if( event.keyCode === 40 )	inputs.down	= true
 		if( event.keyCode === 37 )	inputs.left	= true
 		if( event.keyCode === 39 )	inputs.right	= true
 		// aditional imputs
