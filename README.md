@@ -29,19 +29,25 @@ The game based on basics of WebGL and 3D models on three.js.
 
 **Control**
 
+• Run (W or ↑).
+
 • Move right (D or →).
 
 • Move left (A or ←).
 
-• Move front (S or ↑).
-
-• Move back (W or ↓).
-
 • Jump (SPACE).
 
-• Animaiton test 1 (N).
+• Change view (X).
 
-• Animaiton test 2 (M).
+• Zoom in (C).
+
+• Zoom out (V).
+
+• Pause (P).
+
+• Animaiton test / autokill 1 (N).
+
+• Animaiton test / autokill 2 (M).
 
 ---
 
