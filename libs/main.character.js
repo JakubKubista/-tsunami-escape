@@ -34,8 +34,14 @@ function setMainCharacterControl(mainCharacter){
 		if( event.keyCode === 39 )	inputs.right	= true
 		// aditional imputs
 		if( event.keyCode === 32 )	inputs.jump	= true
-		if( event.keyCode === 77 )	mainCharacter.setAnimationName('flip')
-		if( event.keyCode === 78 )  mainCharacter.setAnimationName('crdeath')
+		if( event.keyCode === 77 )	{
+			mainCharacter.setAnimationName('flip')
+			if(getHealth()>1) decHealth()
+		}
+		if( event.keyCode === 78 )  {
+			mainCharacter.setAnimationName('crdeath')
+			if(getHealth()>1) decHealth()
+		}
 		// crazy mode
 		if( event.keyCode === 16 )	{
 			if(mainCharacter.character.animationFPS == 100){
