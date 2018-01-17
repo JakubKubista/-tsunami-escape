@@ -53,6 +53,9 @@
 	<div class="info" id="newstage">
 	 	<h1 id="stagetext">Stage 1</h1>
 	</div>
+	<div class="info" id="extrascore">
+	 	<h1 id="extrascoretext">+5000</h1>
+	</div>
 
 <script src='vendor/three.js/build/three.js'></script>
 <script src='vendor/require.js/require.js'></script>
@@ -657,6 +660,15 @@ require([
 				timerStart = false
 			}
 		}
+	})
+	var extraScoreTimer = 0
+	onRenderFcts.push(function(){
+			getExtraScore() ? extraScoreTimer++ : extraScoreTimer = 0
+			if(extraScoreTimer==1) score += addExtraScore()
+			if(extraScoreTimer>100){
+				removeExtraScore()
+				setExtraScore(false)
+			}
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////

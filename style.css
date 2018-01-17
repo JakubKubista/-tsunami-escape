@@ -15,13 +15,13 @@ body {
 	padding: 25px;
 	font-size: 20px;
 }
-#leftInfo {
+#leftInfo, #extrascore  {
 	width: 20%;
 	padding-top: 5px;
 	left: 10px;
   display: none;
 }
-#rightInfo {
+#rightInfo{
 	right: 10px;
   display: none;
 }
@@ -83,11 +83,21 @@ body {
   display: none;
 }
 #newstage{
-	display: none;
 	background: none;
   top: 0%;
   margin-top: 0px;
   height: 30px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
+}
+#extrascore{
+  display: none;
+	background: none;
+	bottom: -0.35%;
+	left:12%;
+	margin-left: 0;
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -ms-transition: all 0.5s;
@@ -100,6 +110,9 @@ body {
 	font-variant: normal;
 	font-weight: 500;
 	line-height: 26.4px;
+}
+#extrascoretext{
+	font-size: 20px;
 }
 #pause{
   top: 40%;

@@ -171,3 +171,22 @@
 	function setFixedView(fixedView){
 		this.fixedView = fixedView;
 	}
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Extra score																			//
+	//////////////////////////////////////////////////////////////////////////////////
+	var extraScore = false;
+	function getExtraScore(){
+		return extraScore;
+	}
+	function setExtraScore(extraScore){
+		this.extraScore = extraScore;
+	}
+	function addExtraScore(){
+		var generatedExtraScore = Math.floor((Math.random() * 10) + 5);
+		document.getElementById('extrascore').style.display = "block";
+		document.getElementById('extrascoretext').innerHTML = "+" + generatedExtraScore*100;
+		return generatedExtraScore*100;
+	}
+	function removeExtraScore(){
+		document.getElementById('extrascore').style.display = "none";
+	}
