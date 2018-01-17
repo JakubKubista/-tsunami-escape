@@ -5,7 +5,6 @@
 	function generateObstacleType(){
 		var generatedObstacle = null;
 		var obstacleNumber = Math.floor((Math.random() * 7) + 1);
-		var obstacleNumber = 7
 		switch (obstacleNumber) {
 			case 1:
 				specialObstacle = "mistake"
