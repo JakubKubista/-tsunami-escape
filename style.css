@@ -72,7 +72,7 @@ body {
   -ms-transition: all 0.5s;
   -o-transition: all 0.5s;
 }
-#statistics, #pause, #controls, #enterence{
+#statistics, #pause, #controls, #enterence, #newstage{
   position: absolute;
   width: 300px;
   height: 180px;
@@ -81,6 +81,25 @@ body {
   margin-top: -100px;
   margin-left: -150px;
   display: none;
+}
+#newstage{
+	display: none;
+	background: none;
+  top: 0%;
+  margin-top: 0px;
+  height: 30px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
+}
+#stagetext, #appName{
+	font-family: Papyrus, fantasy;
+	font-size: 60px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 26.4px;
 }
 #pause{
   top: 40%;

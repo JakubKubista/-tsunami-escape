@@ -14,7 +14,7 @@
 	 	<span id="pausespan" onclick="gamePause()">Pause (P)</span>
 	</div>
 	<div class="info" id="enterence">
-	 	<h1>APOCALYPSE ESCAPE</h1><br /><br />
+	 	<h1 id="appName">APOCALYPSE <br /><br /><br /> ESCAPE</h1><br /><br />
 		<span id="hoverButton" onclick="gameStarted()">Start</span><br /><br />
 		<span id="hoverButton" onclick="gameControls(1)">Controls</span>
 	</div>
@@ -35,7 +35,7 @@
 				SPACE (jump) <br /><br />
 			</div>
 		  <div class="column">
-				X (fixed cam) <br /><br />
+				X (free camera) <br /><br />
 				C (zoom input) <br /><br />
 				V (zoom out)<br /><br />
 				N (hurt you)
@@ -49,6 +49,9 @@
 	 	<h1>GAME OVER</h1>
 		<span id="finalScore"></span><br /><br />
 		<span id="hoverButton" onclick="gameRestart()">Restart</span>
+	</div>
+	<div class="info" id="newstage">
+	 	<h1 id="stagetext">Stage 1</h1>
 	</div>
 
 <script src='vendor/three.js/build/three.js'></script>
@@ -201,6 +204,10 @@ require([
 		//////////////////////////////////////////////////////////////////////////////////
 		function generateRoad(z){
 			var road = THREEx.Environment.road()
+			if(getChangedStage()){
+				setStartStage(z)
+				setChangedStage(false)
+			}
 			road.receiveShadow =  true
 			scene.add(road)
 			var velocity	= new THREE.Vector3(0, 0, z);
@@ -558,11 +565,7 @@ require([
 		}
 		// camera reset
 		if( event.keyCode === 88 ){
-			if(resetView){
-				resetView = false
-			}else{
-				resetView = true
-			}
+			getFixedView() ? setFixedView(false) : setFixedView(true)
 		}
 		// camera zoom out
 		if( event.keyCode === 67 ){
@@ -585,7 +588,6 @@ require([
 
 	var cameraDistance = 0.0
 	var mouse	= {x : 0, y : 0}
-	var resetView = false
 	var cameraDefaultY = 3
 	var cameraDefaultZ = 15
 
@@ -597,7 +599,7 @@ require([
 	var cameraLimitY = 0.22232557270104733
 
 	onRenderFcts.push(function(delta, now){
-		if((mouse.x==0 && mouse.y==0) || (resetView)){
+		if((mouse.x==0 && mouse.y==0) || (getFixedView())){
 			camera.position.x = 0
 			camera.position.y = cameraDefaultY
 		}else{
@@ -622,8 +624,9 @@ require([
 	//		render the scene						//
 	//////////////////////////////////////////////////////////////////////////////////
 	var stageDiff = 5000;
-	var oldDiff = 5000;
 	var stageMult = 1;
+	var stageTimer = 0;
+	var timerStart = false;
 	onRenderFcts.push(function(){
 		renderer.render( scene, camera );
 		document.getElementById('score').innerHTML = "Score: " + score
@@ -633,15 +636,29 @@ require([
 		}
 		if(score>=stageDiff){
 			stageMult++
-			oldDiff = stageDiff
-			stageDiff+=(10000*stageMult)
 			setChangedStage(true)
+			setWindowShowed(true)
 			incStage()
+			stageDiff+=(10000*stageMult)
 		}
-		if(oldDiff+3000<=score){
-			document.getElementById('stage').innerHTML = "Stage: " + getStage()
+		if(mainCharacter.character.object3d.position.z+18 <= getStartStage()){
+				timerStart = true
+		}else{
+			timerStart ? stageTimer++ : stageTimer = 0
+			if(stageTimer>=1){
+				//&& getWindowShowed()
+				document.getElementById('stage').innerHTML = "Stage: " + getStage()
+				document.getElementById('stagetext').innerHTML = "Stage " + getStage()
+				newWindowStage(true)
+			}
+			if(stageTimer>250){
+				setWindowShowed(false)
+				newWindowStage(false)
+				timerStart = false
+			}
 		}
 	})
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Rendering Loop runner						//
 	//////////////////////////////////////////////////////////////////////////////////

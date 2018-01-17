@@ -39,6 +39,7 @@
 		document.getElementById('enterence').style.display = "block"
 		setPaused(true)
 		setLoaded(true)
+		setFixedView(false)
 	}
 
 	function gameOver(score){
@@ -55,6 +56,7 @@
 		document.getElementById('hint').style.display = "block"
 		setPaused(false)
 		setLoaded(false)
+		setFixedView(true)
 	}
 
 	function gameRestart(){
@@ -74,10 +76,12 @@
 	function gamePause(){
 		document.getElementById('pause').style.display = "block"
 		setPaused(true)
+		setFixedView(false)
 	}
 	function gameContinue(){
 		document.getElementById('pause').style.display = "none"
 		setPaused(false);
+		setFixedView(true)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +125,9 @@
 	//		Set stage																				//
 	//////////////////////////////////////////////////////////////////////////////////
 	var stage = 1;
+	var start = 0;
 	var changedStage = false;
+	var windowShowed = false;
 	function getStage(){
 		return stage;
 	}
@@ -131,6 +137,37 @@
 	function setChangedStage(changedStage){
 		this.changedStage = changedStage;
 	}
+	function getWindowShowed(){
+		return windowShowed;
+	}
+	function setWindowShowed(windowShowed){
+		this.windowShowed = windowShowed;
+	}
+	function getStartStage(){
+		return start;
+	}
+	function setStartStage(start){
+		this.start = start;
+	}
 	function incStage(){
 		this.stage++;
+	}
+	function newWindowStage(show){
+		if(show){
+			document.getElementById('newstage').style.display = "block";
+			document.getElementById('stagetext').innerHTML = "Stage " + getStage();
+		}else{
+			document.getElementById('newstage').style.display = "none";
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Free or fixed veiw																				//
+	//////////////////////////////////////////////////////////////////////////////////
+	var fixedView = true;
+	function getFixedView(){
+		return fixedView;
+	}
+	function setFixedView(fixedView){
+		this.fixedView = fixedView;
 	}

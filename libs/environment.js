@@ -51,7 +51,6 @@
 		var roadURL = "";
 		if(getChangedStage()){
 			roadURL = "images/roads/road"+stageNumber+"New.jpg"
-			setChangedStage(false)
 		}else{
 			roadURL = "images/roads/road"+stageNumber+".jpg"
 		}
