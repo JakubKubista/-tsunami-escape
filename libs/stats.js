@@ -116,3 +116,21 @@
 			document.getElementById('controls').style.display = "none"
 		}
 	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Set stage																				//
+	//////////////////////////////////////////////////////////////////////////////////
+	var stage = 1;
+	var changedStage = false;
+	function getStage(){
+		return stage;
+	}
+	function getChangedStage(){
+		return changedStage;
+	}
+	function setChangedStage(changedStage){
+		this.changedStage = changedStage;
+	}
+	function incStage(){
+		this.stage++;
+	}

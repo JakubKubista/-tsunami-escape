@@ -4,6 +4,7 @@
 <body>
 	<div id="loading"><img src="bower_components/threex.environment/images/loading.jpg" height="400px" width="800px"></div>
 	<div class="info" id="leftInfo">
+	 	<h3 id="stage">Stage: 1</h1>
 	 	<span id="score">Score: 0</span>
 	</div>
 	<div class="info" id="rightInfo">
@@ -58,7 +59,7 @@
 <script src='libs/giant.character.js'></script>
 <script src='libs/obstacle.js'></script>
 <script src='libs/stats.js'></script>
-<script src='libs/building.js'></script>
+<script src='libs/environment.js'></script>
 <script src='libs/audio.js'></script>
 <script>
 require([
@@ -620,12 +621,25 @@ require([
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the scene						//
 	//////////////////////////////////////////////////////////////////////////////////
+	var stageDiff = 5000;
+	var oldDiff = 5000;
+	var stageMult = 1;
 	onRenderFcts.push(function(){
 		renderer.render( scene, camera );
 		document.getElementById('score').innerHTML = "Score: " + score
 		if(health==0) {
 			gameOver(score)
       killed = true
+		}
+		if(score>=stageDiff){
+			stageMult++
+			oldDiff = stageDiff
+			stageDiff+=(10000*stageMult)
+			setChangedStage(true)
+			incStage()
+		}
+		if(oldDiff+3000<=score){
+			document.getElementById('stage').innerHTML = "Stage: " + getStage()
 		}
 	})
 	//////////////////////////////////////////////////////////////////////////////////

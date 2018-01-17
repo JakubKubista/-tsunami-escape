@@ -16,6 +16,8 @@ body {
 	font-size: 20px;
 }
 #leftInfo {
+	width: 20%;
+	padding-top: 5px;
 	left: 10px;
   display: none;
 }
