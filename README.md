@@ -29,7 +29,7 @@ The game based on basics of WebGL and 3D models on three.js.
 
 **Control**
 
-• Run (W or ↑).
+• Run (S or ↓).
 
 • Move right (D or →).
 
